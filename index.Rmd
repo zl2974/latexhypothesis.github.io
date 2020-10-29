@@ -303,9 +303,9 @@ $Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-
 
 $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
 
-$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
+$Reject ~ H_0 ~ if ~ F>F_{k-1,n-k,1-\alpha}$
 
-$Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
+$Fail ~ reject ~ H_0 ~ if ~<F_{k-1,n-k,1-\alpha}$
 ```{r}
 $H_0$ : there's no difference between groups
 
@@ -321,9 +321,9 @@ $Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-
 
 $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
 
-$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
+$Reject ~ H_0 ~ if ~ F>F_{k-1,n-k,1-\alpha}$
 
-$Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
+$Fail ~ reject ~ H_0 ~ if ~<F_{k-1,n-k,1-\alpha}$
 ```
 
 # Proportion testing {.tabset}

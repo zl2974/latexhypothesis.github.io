@@ -612,8 +612,8 @@ $CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{
 <p><span class="math inline">\(Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}\)</span></p>
 <p><span class="math inline">\(Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}\)</span></p>
 <p><span class="math inline">\(F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)\)</span></p>
-<p><span class="math inline">\(Reject ~ H_0 ~ if ~ F&gt;F_{n_1-1,n_2-1,1-\alpha}\)</span></p>
-<p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~&lt;F_{n_1-1,n_2-1,1-\alpha}\)</span></p>
+<p><span class="math inline">\(Reject ~ H_0 ~ if ~ F&gt;F_{k-1,n-k,1-\alpha}\)</span></p>
+<p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~&lt;F_{k-1,n-k,1-\alpha}\)</span></p>
 <pre class="r"><code>$H_0$ : there&#39;s no difference between groups
 
 $H_1$ : at least one group is different from the other groups
@@ -628,9 +628,9 @@ $Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-
 
 $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
 
-$Reject ~ H_0 ~ if ~ F&gt;F_{n_1-1,n_2-1,1-\alpha}$
+$Reject ~ H_0 ~ if ~ F&gt;F_{k-1,n-k,1-\alpha}$
 
-$Fail ~ reject ~ H_0 ~ if ~&lt;F_{n_1-1,n_2-1,1-\alpha}$</code></pre>
+$Fail ~ reject ~ H_0 ~ if ~&lt;F_{k-1,n-k,1-\alpha}$</code></pre>
 </div>
 </div>
 <div id="proportion-testing" class="section level1 tabset">
