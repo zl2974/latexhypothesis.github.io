@@ -293,13 +293,13 @@ $H_0$ : there's no difference between groups
 
 $H_1$ : at least one group is different from the other groups
 
-$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
+$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
 
-$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
+$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2=\sum_i^k(n_i-1)s_i^2$
 
-$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
+$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}$
 
-$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
+$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}$
 
 $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
 
@@ -311,20 +311,24 @@ $H_0$ : there's no difference between groups
 
 $H_1$ : at least one group is different from the other groups
 
-$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
+$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
 
-$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
+$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2=\sum_i^k(n_i-1)s_i^2$
 
-$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
+$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}$
 
-$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
-  
+$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}$
+
 $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
 
 $Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
 
 $Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
 ```
+
+# Proportion testing {.tabset}
+
+## Normal Approximation
 
 ## Homogeneity Chi-sq test
 
@@ -339,6 +343,13 @@ $H_0 :p_{1j} =p_{2j}=...=p_{ij}$ the proportion among $group_i$ are equal ...
 
 $H_1$ : For at least one column there're two row i and i' where the proability are not the same.
 
-$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}$
+$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col-1)}$
 ```
+
+
+## Independent test
+
+## Fisher Exact
+
+## McNemar Test
 

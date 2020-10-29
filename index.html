@@ -607,10 +607,10 @@ $CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{
 <h2>ANOVA</h2>
 <p><span class="math inline">\(H_0\)</span> : there’s no difference between groups</p>
 <p><span class="math inline">\(H_1\)</span> : at least one group is different from the other groups</p>
-<p><span class="math inline">\(Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2\)</span></p>
-<p><span class="math inline">\(Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2\)</span></p>
-<p><span class="math inline">\(Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}\)</span></p>
-<p><span class="math inline">\(Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2\)</span></p>
+<p><span class="math inline">\(Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}\)</span></p>
+<p><span class="math inline">\(Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2=\sum_i^k(n_i-1)s_i^2\)</span></p>
+<p><span class="math inline">\(Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}\)</span></p>
+<p><span class="math inline">\(Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}\)</span></p>
 <p><span class="math inline">\(F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)\)</span></p>
 <p><span class="math inline">\(Reject ~ H_0 ~ if ~ F&gt;F_{n_1-1,n_2-1,1-\alpha}\)</span></p>
 <p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~&lt;F_{n_1-1,n_2-1,1-\alpha}\)</span></p>
@@ -618,19 +618,25 @@ $CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{
 
 $H_1$ : at least one group is different from the other groups
 
-$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
+$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
 
-$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
+$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2=\sum_i^k(n_i-1)s_i^2$
 
-$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
+$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}$
 
-$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
-  
+$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}$
+
 $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
 
 $Reject ~ H_0 ~ if ~ F&gt;F_{n_1-1,n_2-1,1-\alpha}$
 
 $Fail ~ reject ~ H_0 ~ if ~&lt;F_{n_1-1,n_2-1,1-\alpha}$</code></pre>
+</div>
+</div>
+<div id="proportion-testing" class="section level1 tabset">
+<h1>Proportion testing</h1>
+<div id="normal-approximation" class="section level2">
+<h2>Normal Approximation</h2>
 </div>
 <div id="homogeneity-chi-sq-test" class="section level2">
 <h2>Homogeneity Chi-sq test</h2>
@@ -641,7 +647,16 @@ $Fail ~ reject ~ H_0 ~ if ~&lt;F_{n_1-1,n_2-1,1-\alpha}$</code></pre>
 
 $H_1$ : For at least one column there&#39;re two row i and i&#39; where the proability are not the same.
 
-$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}$</code></pre>
+$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col-1)}$</code></pre>
+</div>
+<div id="independent-test" class="section level2">
+<h2>Independent test</h2>
+</div>
+<div id="fisher-exact" class="section level2">
+<h2>Fisher Exact</h2>
+</div>
+<div id="mcnemar-test" class="section level2">
+<h2>McNemar Test</h2>
 </div>
 </div>
 

@@ -409,7 +409,7 @@ div.tocify {
 <h2>Binomial</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}\)</span></p>
 <pre class="r"><code>rbinom(5,10,0.3)
-## [1] 1 1 4 0 1
+## [1] 2 4 1 3 4
 qbinom(0.05,10,0.3)
 ## [1] 1
 pbinom(1,10,0.3)
@@ -421,7 +421,7 @@ dbinom(1,10,0.3)
 <h2>Normal Distribution</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}\)</span></p>
 <pre class="r"><code>rnorm(5)
-## [1]  0.78167769  1.39261441  0.71862449  0.04145689 -0.18407711
+## [1]  1.3724892 -0.3851314  0.4615993 -0.1315540  0.3199162
 qnorm(0.05)
 ## [1] -1.644854
 pnorm(1.96)
