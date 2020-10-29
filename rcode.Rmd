@@ -10,7 +10,8 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = F)
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = T)
 library(tidyverse)
 ```
 
@@ -19,171 +20,179 @@ library(tidyverse)
 
 ## Binomial
 $P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}$
-```{r}
-$P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}$
+```{r collapse=T}
+rbinom(5,10,0.3)
+qbinom(0.05,10,0.3)
+pbinom(1,10,0.3)
+dbinom(1,10,0.3)
 ```
 
 
 ## Normal Distribution
 
 $P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
-```{r}
-$P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
+```{r collapse=T}
+rnorm(5)
+qnorm(0.05)
+pnorm(1.96)
+dnorm(1.96)
 ```
 
+# Descriptive Statistics {.tabset}
 
-
-# One Group t-test {.tabset}
-
-## left tailed
-
-$H_0$: there's no difference betwee sample mean and the true mean
-
-$H_1$: the sample mean is lower than the true mean
-
-$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
-
-$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ t<t_{n-1,\alpha}$
-
-$Fail ~ reject ~ H_0 ~ if ~ t>t_{n-1,\alpha}$
-
-$CI : (-\infty,\bar{x} - t_{df,\alpha}*sd/\sqrt{n})$
-
+##
+## Table
 ```{r}
-$H_0$: there's no difference betwee sample mean and the true mean
 
-$H_1$: the sample mean is lower than the true mean
 
-$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
+################################################################
+#                  Biostatistical Methods I                    #
+#                   Descriptive Statistics                     #
+#                    Author: Cody Chiuzan                      #
+################################################################
 
-$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
+# Library 'arsenal' is used for descriptive statistics tables
+# Library 'dplyr' has nice functions for data manipulation, also mutate()
+# Library 'ggplot2' is used for graphing
 
-$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
 
-$Reject ~ H_0 ~ if ~ t<t_{n-1,\alpha}$
+library(arsenal)
+library(dplyr)
+library(ggplot2)
 
-$Fail ~ reject ~ H_0 ~ if ~ t>t_{n-1,\alpha}$
+#########################################################################
+#                          Import Data                                  #
+#########################################################################
 
-$CI : (-\infty,\bar{x} - t_{df,\alpha}*sd/\sqrt{n})$
+# Set working directory
+
+low_birth_all <- read.csv(here::here("R_Code/R - Module 2/lowbwt_ALL.csv"))
+
+names(low_birth_all)
+head(low_birth_all)
+
+dim(low_birth_all)
+summary(low_birth_all)
+str(low_birth_all)
+
+# Check for missing values
+anyNA(low_birth_all)
+
+filter(low_birth_all, is.na(age))
+
+# Some details about the data: 189 births info were collected at a medical center.
+# The dataset contains the following 10 variables:
+# low: indicator of birth weight less than 2.5kg
+# age: mother's age in years
+# lwt: mother's weight in pounds at last menstrual period
+# race: mothers race ("white", "black", "other")
+# smoke: smoking status during pregnancy (yes/no)
+# ht: history of hypertension (yes/no)
+# ui: presence of uterine irritability (yes/no)
+# ftv: physician visit during the first trimester (yes/no)
+# ptl: previous premature labor (yes/no)
+# bwt: birth weight in grams
+
+
+#########################################################################
+#         Descriptive Statistics: Continuous Variables                  #
+#########################################################################
+
+
+mean(low_birth_all$age)                               # Mean
+median(low_birth_all$age)                             # Median
+sd(low_birth_all$age)                                 # Standard Deviation
+quantile(low_birth_all$age)                           # Min, 25ht, 50th, 75th, Max
+quantile(low_birth_all$age, c(0.10, 0.30, 0.60))        # Tertiles
+
+# A more condensed way to obtain summary statistics
+summary(low_birth_all$age)
+
+# Summary statistics for each level of another categorical variable
+mean <- tapply(low_birth_all$bwt, low_birth_all$race, mean)
+sd <- tapply(low_birth_all$bwt, low_birth_all$race, sd)
+med <- tapply(low_birth_all$bwt, low_birth_all$race, median)
+min <- tapply(low_birth_all$bwt, low_birth_all$race, min)
+max <- tapply(low_birth_all$bwt, low_birth_all$race, max)
+cbind(mean, sd, med, min, max)
+
+# Use function tableby() from library 'arsenal' to create a summary table (called Table 1 in publications)
+# Use continuous and categorical variables
+
+
+# First table - not ideal
+tab1 <- tableby(~ age + bwt + smoke, data = low_birth_all)
+summary(tab1)
+
+
+# Change variable names/labels
+my_labels <-
+  list(
+    age = "Age(yrs)",
+    bwt = "Birthweight(g)",
+    smoke = "Smoker",
+    race = "Race"
+  )
+
+# Clean the output
+my_controls <- tableby.control(
+  total = T,
+  test = F,
+  # No test p-values yet
+  numeric.stats = c("meansd", "medianq1q3", "range", "Nmiss2"),
+  cat.stats = c("countpct", "Nmiss2"),
+  stats.labels = list(
+    meansd = "Mean (SD)",
+    medianq1q3 = "Median (Q1, Q3)",
+    range = "Min - Max",
+    Nmiss2 = "Missing",
+    countpct = "N (%)"
+  )
+)
+
+# Make 'smoke' a factor to show N (%)
+birth_df <- low_birth_all %>%
+  mutate(smoke = factor(smoke, labels = c("No", "Yes"))) # Start labeling with 0 (increasing order)
+
+# Second table
+tab2 <-
+  tableby(~ age + bwt + smoke, data = birth_df, control = my_controls)
+summary(tab2,
+        title = "Descriptive Statistics: Lowbirth Data",
+        labelTranslations = my_labels,
+        text = T)
+
+# Tabulation by race categories
+tab3 <-
+  tableby(race ~ age + bwt + smoke, data = birth_df, control = my_controls)
+summary(tab3,
+        title = "Descriptive Statistics: Lowbirth Data",
+        labelTranslations = my_labels,
+        text = T)
+
+
+
+#########################################################################
+#         Descriptive Statistics: Categorical Variables                 #
+#########################################################################
+
+tbl <-
+  table(low_birth_all$smoke, low_birth_all$race)	        # Two-way table
+tbl
+prop.table(tbl, 1)                        		                # Row proportions
+prop.table(tbl, 2)                                            # Column proportions
+
+# 3-way cross-tabulation
+xtabs( ~ race + smoke + ht, data = low_birth_all)
+
 ```
 
+# T-Test {.tabset}
 
-## right tailed
+##
 
-$H_0$: there's no difference betwee sample mean and the true mean
+## One Group 
 
-$H_1$: the sample mean is greater than the true mean
-
-$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
-
-$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ t>t_{n-1,1-\alpha}$
-
-$Fail ~ reject ~ H_0 ~ if ~ t<t_{n-1,1-\alpha}$
-
-$CI : (\bar{x} + t_{df,1-\alpha}*sd/\sqrt{n},\infty)$
-
-```{r}
-$H_0$: there's no difference betwee sample mean and the true mean
-
-$H_1$: the sample mean is greater than the true mean
-
-$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
-
-$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ t>t_{n-1,1-\alpha}$
-
-$Fail ~ reject ~ H_0 ~ if ~ t<t_{n-1,1-\alpha}$
-
-$CI : (\bar{x} + t_{df,1-\alpha}*sd/\sqrt{n},\infty)$
-```
-
-
-## two-side
-
-$H_0$: there's no difference betwee sample mean and the true mean
-
-$H_1$: the sample mean is different from the true mean
-
-$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
-
-$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
-
-$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{x} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
-
-
-```{r}
-$H_0$: there's no difference betwee sample mean and the true mean
-
-$H_1$: the sample mean is different from the true mean
-
-$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
-
-$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
-
-$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{x} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
-
-```
-
-### paired
-$H_0$: there's no difference betwee difference
-
-$H_1$: the difference is different
-
-$\bar{d} = \frac{\sum_{i=1}^n{d_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(d_i - \bar{d})^2}/(n-1)}$
-
-$t = \frac{\bar{d} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
-
-$CI : (\bar{d} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
-
-
-```{r}
-$H_0$: there's no difference betwee difference
-
-$H_1$: the difference is different
-
-$\bar{d} = \frac{\sum_{i=1}^n{d_i}}{n}$
-
-$s_d = \sqrt{\sum_{i=1}^n{(d_i - \bar{d})^2}/(n-1)}$
-
-$t = \frac{\bar{d} - 0}{s_d/\sqrt{n}}$
-
-$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
-
-$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
-```
-
-## R Code
 ```{r eval = T}
 ################################################################
 #                    Biostatistical Methods I                  #
@@ -201,8 +210,8 @@ $CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\
 set.seed(2)
 sample_means_exp1 = rep(NA, 1000)
 
-for(i in 1:1000){
-  sample_means_exp1[i] = mean(rexp(10,0.3))
+for (i in 1:1000) {
+  sample_means_exp1[i] = mean(rexp(10, 0.3))
 }
 
 # sample_means_exp
@@ -212,7 +221,10 @@ mean(sample_means_exp1)                # compare to true Mean = 1/lambda
 var(sample_means_exp1)                 # compare to true Var=1/lambda^2
 
 #Histogram
-hist(sample_means_exp1, main = "Samples of Size N=10 from Exp(0.3)", xlab = "Sample Means", prob = T)
+hist(sample_means_exp1,
+     main = "Samples of Size N=10 from Exp(0.3)",
+     xlab = "Sample Means",
+     prob = T)
 lines(density(sample_means_exp1), col = "darkblue", lwd = 2)
 
 # Draw 1000 samples of size 50 from an underlying exponential distribution with parameter lambda=0.3
@@ -221,16 +233,19 @@ lines(density(sample_means_exp1), col = "darkblue", lwd = 2)
 set.seed(2)
 sample_means_exp2 = rep(NA, 1000)
 
-for(i in 1:1000){
-  sample_means_exp2[i] = mean(rexp(50,0.3))
+for (i in 1:1000) {
+  sample_means_exp2[i] = mean(rexp(50, 0.3))
 }
 
-# Calculate the means and the variances of all samples 
+# Calculate the means and the variances of all samples
 mean(sample_means_exp2)                # compare to true Mean = 1/lambda
 var(sample_means_exp2)                 # compare to true Var=1/lambda^2
 
 #Histogram
-hist(sample_means_exp2, main = "Samples of Size N=50 from Exp(0.3)", xlab = "Sample Means", prob = T)
+hist(sample_means_exp2,
+     main = "Samples of Size N=50 from Exp(0.3)",
+     xlab = "Sample Means",
+     prob = T)
 lines(density(sample_means_exp2), col = "darkblue", lwd = 2)
 
 
@@ -239,33 +254,33 @@ lines(density(sample_means_exp2), col = "darkblue", lwd = 2)
 # Sigma represents the pooulation standard deviation
 # 1-(alpha/2)=1-(0.05/2)=0.975
 
-LCLz95<-175 - qnorm(0.975) * 15/sqrt(10)
-UCLz95<-175 + qnorm(0.975) * 15/sqrt(10)
-CLz95<-c(LCLz95, UCLz95)
+LCLz95 <- 175 - qnorm(0.975) * 15 / sqrt(10)
+UCLz95 <- 175 + qnorm(0.975) * 15 / sqrt(10)
+CLz95 <- c(LCLz95, UCLz95)
 CLz95
 
 # What if we want a 99% CI?
-LCLz99<-175-qnorm(0.995)* 15/sqrt(10)
-UCLz99<-175 + qnorm(0.995) * 15/sqrt(10)
-CLz99<-c(LCLz99, UCLz99)
+LCLz99 <- 175 - qnorm(0.995) * 15 / sqrt(10)
+UCLz99 <- 175 + qnorm(0.995) * 15 / sqrt(10)
+CLz99 <- c(LCLz99, UCLz99)
 CLz99
 
 
 # Construct a 95% CI for the population mean with n=10 => df=10-1=9, X_bar=175, and known s=15
 # s represents the sample standard deviation
 
-LCLt95<-175 - qt(0.975, df=9) * 15/sqrt(10)
-UCLt95<-175 + qt(0.975, df=9) * 15/sqrt(10)
-CLt95<-c(LCLt95, UCLt95)
+LCLt95 <- 175 - qt(0.975, df = 9) * 15 / sqrt(10)
+UCLt95 <- 175 + qt(0.975, df = 9) * 15 / sqrt(10)
+CLt95 <- c(LCLt95, UCLt95)
 CLt95
 
 
 # Construct a 95% CI for the population variance with known s=15
 # s represents the sample standard deviation
 
-LCL_var95 <- 9*(15^2)/qchisq(0.975, 9)
-UCL_var95 <- 9*(15^2)/qchisq(0.025, 9)
-CL_var95<-c(LCL_var95, UCL_var95)
+LCL_var95 <- 9 * (15 ^ 2) / qchisq(0.975, 9)
+UCL_var95 <- 9 * (15 ^ 2) / qchisq(0.025, 9)
+CL_var95 <- c(LCL_var95, UCL_var95)
 CL_var95
 
 
@@ -273,26 +288,27 @@ CL_var95
 # Test if the mean infract size is different from 25
 # X_bar=16, s=10, N=40
 
-t_stats<-(16-25)/(10/sqrt(40))
+t_stats <- (16 - 25) / (10 / sqrt(40))
 t_stats
 
 # Compare the test statistics with the critical value, alpha=0.05
 
-qt(0.975,39) # 2.02
+qt(0.975, 39) # 2.02
 
 # Compute the p-value: t_stats<0, so the p-value is twice area to the left of a t distr. with 39 df
 
-p.val<-2*pt(t_stats,39) # p.val<.0001, reject H0.
+p.val <- 2 * pt(t_stats, 39) # p.val<.0001, reject H0.
 
 
 # Remember the low_birth data
 
-low_birth_all <- read.csv(here::here("R_Code/R - Module 2/lowbwt_ALL.csv"))
+low_birth_all <-
+  read.csv(here::here("R_Code/R - Module 2/lowbwt_ALL.csv"))
 
 # Let's test if the true mean is different than 3000g
 # One-sample t-test, two-tailed
 
-t.test(low_birth_all$bwt, alternative='two.sided', mu=3000)
+t.test(low_birth_all$bwt, alternative = 'two.sided', mu = 3000)
 
 
 # Output from R
@@ -302,13 +318,13 @@ t.test(low_birth_all$bwt, alternative='two.sided', mu=3000)
 # t = -1.0437, df = 188, p-value = 0.298 ----> Fail to reject H0.
 # alternative hypothesis: true mean is not equal to 3000
 # 95 percent confidence interval: 2840.049 3049.264
-# sample estimates: mean of x is 2944.656 
+# sample estimates: mean of x is 2944.656
 
 
 # Let's test if the true mean is less than 3000g
 # One-sample t-test, one-tailed
 
-t.test(low_birth_all$bwt, alternative='less', mu=3000)
+t.test(low_birth_all$bwt, alternative = 'less', mu = 3000)
 
 # Output from R
 # t = -1.0437, df = 188, p-value = 0.149 ----> Fail to reject H0.
@@ -318,109 +334,9 @@ t.test(low_birth_all$bwt, alternative='less', mu=3000)
 ```
 
 
-# Two Group testing {.tabset}
-
-## variance test
-
-$H_0$: the variances between group are the equal(no difference)
-    
-$H_1$: the variances between group are not the equal(there's difference)
-
-$s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
-
-$s_{x_2} = \sqrt{\sum_{j=1}^{n_2}(x_i - \bar{x_2})^2/(n_2-1)}$
-
-$F = s_1^2/s_2^2  \sim F_{n_1-1,n_2-1}$
-
-$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F<F_{n_1-1,n_2-1,\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2}$
-
+## Two Group
 ```{r}
-$H_0$: the variances between group are the equal(no difference)
-    
-$H_1$: the variances between group are not the equal(there's difference)
 
-$s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
-
-$s_{x_2} = \sqrt{\sum_{j=1}^{n_2}(x_i - \bar{x_2})^2/(n_2-1)}$
-
-$F = s_1^2/s_2^2  \sim F_{n_1-1,n_2-1}$
-
-$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F<F_{n_1-1,n_2-1,\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2}$
-```
-
-## t-test with equal variance
-$H_0$: the means between group are the equal(no difference)
-    
-$H_1$: the means between group are not the equal(there's difference)
-
-$s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
-
-$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
-
-$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
-
-$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
-
-```{r}
-$H_0$: the means between group are the equal(no difference)
-    
-$H_1$: the means between group are not the equal(there's difference)
-
-$s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
-
-$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
-
-$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
-
-$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
-```
-
-## t-test with unequal variance
-$H_0$: the means between group are the equal(no difference)
-    
-$H_1$: the means between group are not the equal(there's difference)
-
-$\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
-
-$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
-
-$d' = round(d'') = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
-
-$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
-
-$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
-
-```{r}
-$H_0$: the means between group are the equal(no difference)
-    
-$H_1$: the means between group are not the equal(there's difference)
-
-$\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
-
-$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
-
-$d' = round(d'') = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
-
-$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
-
-$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
-
-$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
-```
-
-
-## R Code
-```{r eval = T}
 
 ################################################################
 #                     Biostatistical Methods I                 #
@@ -428,22 +344,27 @@ $CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{
 #           Author: Cody Chiuzan; Date: Sept 23, 2019          #
 ################################################################
 
+rm(list = ls())
+
 ###########################################################################
 #   Conduct a two-sample paired t-test to assess the effect of a new diet #
 ###########################################################################
 
-weight_before<-c(201,231,221,260,228,237,326,235,240,267,284,201)
-weight_after<-c(200,236,216,233,224,216,296,195,207,247,210,209)
-weight_diff<-weight_after-weight_before
-sd_diff<-sd(weight_diff)
+weight_before <- c(201, 231, 221, 260, 228, 237, 326, 235, 240, 267, 284, 201)
+weight_after <- c(200, 236, 216, 233, 224, 216, 296, 195, 207, 247, 210, 209)
+weight_diff <- weight_after - weight_before
+sd_diff <- sd(weight_diff)
 
 
-test_weight<-mean(weight_diff)/(sd_diff/sqrt(length(weight_diff)))
+test_weight <- mean(weight_diff) / (sd_diff / sqrt(length(weight_diff)))
 
 # Use the t.test() built-in function
 # What alternative are you testing?
-                          
-t.test(weight_after, weight_before, paired=T, alternative="less")
+
+t.test(weight_after,
+       weight_before,
+       paired = T,
+       alternative = "less")
 
 # R output
 
@@ -451,7 +372,7 @@ t.test(weight_after, weight_before, paired=T, alternative="less")
 # t = -3.0201, df = 11, p-value = 0.005827
 # alternative hypothesis: true difference in means is less than 0
 # 95 percent confidence interval:  -Inf -8.174729
-# sample estimates: mean of the differences -20.16667 
+# sample estimates: mean of the differences -20.16667
 
 # Reject the null and conclude that the mean LDL levels are significantly lower after the diet.
 
@@ -467,9 +388,9 @@ t.test(weight_after, weight_before, paired=T, alternative="less")
 # Sample 1: s1=0.16, n1=10, x1_bar=1.08
 # Sample 2: s2=0.14, n2=10, x2_bar=1.00
 
-F_test<-0.16^2/0.14^2
+F_test <- 0.16 ^ 2 / 0.14 ^ 2
 
-F_crit<-qf(.975, df1=9, df2=9) 
+F_crit <- qf(.975, df1 = 9, df2 = 9)
 
 # Compare the F statistic (F_test) to the critical value
 # Fcrit: F with 9 dfs in numerator and 9 dfs in denominator
@@ -477,13 +398,13 @@ F_crit<-qf(.975, df1=9, df2=9)
 # that the pop. variances are not significantly different.
 
 # Use two-sample t-test with equal variances.
-std_pooled<-sqrt(((0.16^2*9)+(0.14^2*9))/18)
+std_pooled <- sqrt(((0.16 ^ 2 * 9) + (0.14 ^ 2 * 9)) / 18)
 
-t_stats<-(1.08-1.00)/(std_pooled*sqrt((1/10)+(1/10)))
+t_stats <- (1.08 - 1.00) / (std_pooled * sqrt((1 / 10) + (1 / 10)))
 
 # Compare t_stats to the critical value: t with 18 df
 
-qt(0.975,18) # 2.10
+qt(0.975, 18) # 2.10
 
 # t-stats=1.19 < 2.10, fail to reject the null and conclude that
 # there is not a sig difference between the mean BMD levels of the two groups.
@@ -497,7 +418,7 @@ qt(0.975,18) # 2.10
 
 # Effect of caffeine on muscle metabolism.
 # 15 men were randomly selected to take a capsule containing pure caffeine one hour before the test.
-# The other group of 20 men received a placebo capsule. 
+# The other group of 20 men received a placebo capsule.
 # During each exercise the subject's respiratory exchange ratio (RER) was measured.
 # The question of interest to the experimenter was whether, on average, caffeine consumption has an effect on RER.
 # The two samples came from two underlying normal distributions: N(94.2,5.6), N(105.5,8.1) and are independent.
@@ -506,8 +427,8 @@ qt(0.975,18) # 2.10
 # Ideally, you should generate data using past info (here I made it up).
 
 set.seed(6)
-caff<-rnorm(15, 94.2, 5.6)
-placebo<-rnorm(20, 105.5, 8.1)
+caff <- rnorm(15, 94.2, 5.6)
+placebo <- rnorm(20, 105.5, 8.1)
 
 # Test equality of variances: use R function var.test()
 
@@ -516,7 +437,8 @@ var.test(placebo, caff, alternative = "two.sided")
 #F = 3.5768, num df = 19, denom df = 14, p-value = 0.01881             # Reject the null, evidence that variances are not equal.
 
 
-res<-t.test(caff, placebo, var.equal=FALSE, paired=FALSE)               # var.equal=FALSE is the default, so no need to specifically write it.
+res <-
+  t.test(caff, placebo, var.equal = FALSE, paired = FALSE)               # var.equal=FALSE is the default, so no need to specifically write it.
 res
 
 # Look at the complete list of results.
@@ -525,92 +447,16 @@ names(res)
 # t = -4.5834, df = 30.125, p-value = 7.472e-05                        # Reject the null and conclude that the means RER are sig diff b/w the two groups.
 
 # 95% CI of the difference: (-17.639668,-6.766628)                     # We could safely say that the mean RER is sig. lower in the caffeine group (Why?)
-# Two-Sample Independent t-Test: Unequal Variances
-
-# Eye Example: Dominant and Recessive Genotypes
-
-# Dominant: X_bar=0.91, s=0.15, n=66
-# Recessive: X_bar=0.34, s=0.23, n=34
-
-# Test the equality of variances
-F_stats<-0.23^2/0.15^2
-F_stats
-
-F_crit<-qf(.975, df1=33, df2=65) 
-F_crit   # 1.770
-
-# Compare the F statistic (F_test) to the critical value
-# Because F_test > F_crit, we reject H0 and conclude
-# that the pop. variances are significantly different.
-
-# Use two-sample t-test with unequal variances
-
-# Calculate the pooled degrees of freedom
-
-d1<-((0.23^2/34)+(0.15^2/66))^2/((0.23^2/34)^2/33)+((0.15^2/66)^2/65)
-d1
-
-# Round down d1 to the nearest integer: d2=49
-
-t_stats<-(0.34-0.91)/sqrt((0.23^2/34)+(0.15^2/66))
-t_stats
-
-# Compare t_stats to the critical value: t with d2 df
-
-t_crit <- qt(0.975,49) 
-t_crit    # 2.010
-
-# |t-stats|> 2.10, reject the null and conclude that
-# there is a sig difference between the mean levels the two groups.
-
-# Compute the p-value: t_stats<0, so the p-value is twice area to the left of a t distr. with 49 df
-
-p.val<-2*pt(t_stats,49) # p.val<.0001, reject H0.
-p.val
 
 ```
+
 
 # Multigroup Camparison {.tabset}
 
+##
+
 ## ANOVA
-$H_0$ : there's no difference between groups
 
-$H_1$ : at least one group is different from the other groups
-
-$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
-
-$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
-
-$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
-
-$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
-
-$F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
-
-$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
-
-$Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
-```{r}
-$H_0$ : there's no difference between groups
-
-$H_1$ : at least one group is different from the other groups
-
-$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
-
-$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
-
-$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
-
-$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
-  
-$F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
-
-$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
-
-$Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
-```
-
-## R Code
 ```{r eval = T}
 ################################################################
 #                      Biostatistical Methods I                #
@@ -618,41 +464,57 @@ $Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
 #                      Author: Cody Chiuzan                    #
 ################################################################
 
-library(multcomp)
-
 ################################################################
-# A study is examining the effect of glucose on insulin release. 
-# Specimens of pancreatic tissue from experimental animals were 
+# A study is examining the effect of glucose on insulin release.
+# Specimens of pancreatic tissue from experimental animals were
 # treated with five different stimulants and the insulin levels were recorded.
 # Use an ANOVA test to compare the mean insulin levels across the five groups.
 
 ################################################################
 
-ins1<-c(1.53,1.61,3.75,2.89,3.26)
-ins2<-c(3.15, 3.96,3.59,1.89,1.45,1.56)
-ins3<-c(3.89,3.68,5.70,5.62,5.79,5.33)
-ins4<-c(8.18,5.64,7.36,5.33,8.82,5.26,7.10)
-ins5<-c(5.86,5.46,5.69,6.49,7.81,9.03,7.49,8.98)
+ins1 <- c(1.53, 1.61, 3.75, 2.89, 3.26)
+ins2 <- c(3.15, 3.96, 3.59, 1.89, 1.45, 1.56)
+ins3 <- c(3.89, 3.68, 5.70, 5.62, 5.79, 5.33)
+ins4 <- c(8.18, 5.64, 7.36, 5.33, 8.82, 5.26, 7.10)
+ins5 <- c(5.86, 5.46, 5.69, 6.49, 7.81, 9.03, 7.49, 8.98)
 
 # Re-shape the data
-insulin<-c(ins1,ins2,ins3,ins4,ins5)
-ind<-c(rep(1,length(ins1)),rep(2,length(ins2)),rep(3,length(ins3)),rep(4,length(ins4)),rep(5,length(ins5)))
+insulin <- c(ins1, ins2, ins3, ins4, ins5)
+ind <-
+  c(rep(1, length(ins1)),
+    rep(2, length(ins2)),
+    rep(3, length(ins3)),
+    rep(4, length(ins4)),
+    rep(5, length(ins5)))
 
-new_data<-as.data.frame(cbind(insulin,ind))
+new_data <- as.data.frame(cbind(insulin, ind))
 head(new_data)
 
 # Summarize the data
 
-tmp_functn<-function(x)c(sum=sum(x), mean=mean(x), var=var(x), n=length(x))
+tmp_functn <-
+  function(x)
+    c(
+      sum = sum(x),
+      mean = mean(x),
+      var = var(x),
+      n = length(x)
+    )
 tapply(insulin, ind, tmp_functn)
 
-# Create box-plots 
-boxplot(insulin~ind,data=new_data,main="Effect of glucose on insulin release",xlab="Experimental Group", ylab="Insulin levels")
+# Create box-plots
+boxplot(
+  insulin ~ ind,
+  data = new_data,
+  main = "Effect of glucose on insulin release",
+  xlab = "Experimental Group",
+  ylab = "Insulin levels"
+)
 
 # Perform an ANOVA test: are the mean insulin levels significantly different?
 # Need to mention the independent variable as a factor; o/w will be considered continuous
 # Function lm() is broader, including linear regression models
-res<-lm(insulin~factor(ind), data=new_data)
+res <- lm(insulin ~ factor(ind), data = new_data)
 
 # Coefficients of the ANOVA model with 'grand mean' and alpha effects.
 # Will use them later in regression.
@@ -664,39 +526,423 @@ anova(res)
 
 # Another option using aov();
 # Save the anova object to use later for multiple comparisons
-res1<-aov(insulin~factor(ind), data=new_data)
+res1 <- aov(insulin ~ factor(ind), data = new_data)
 summary(res1)
+```
 
+## Between Groups Comparison
+```{r message=F}
+library(multcomp)
+```
 
+```{r}
 # Multiple comparisons adjustments: includes Bonferroni, Holm, Benjamini-Hochberg
-pairwise.t.test(new_data$insulin, new_data$ind, p.adj='bonferroni')
+pairwise.t.test(new_data$insulin, new_data$ind, p.adj = 'bonferroni')
 
 # For Tukey, we need to use another function with an object created by aov()
-Tukey_comp<-TukeyHSD(res1)
+Tukey_comp <- TukeyHSD(res1)
 Tukey_comp
 plot(Tukey_comp)
 
 
 # Dunnett's test: multiple comparisons with a specified control (here group #1)
-summary(glht(res1), linfct=mcp(Group="Dunnett"))
-
+summary(glht(res1), linfct = mcp(Group = "Dunnett"))
 ```
 
-# Contingency Table {.tabset}
 
-## Homogeneity Chi-sq test
+# Proportion {.tabset}
 
-$H_0 :p_{1j} =p_{2j}=...=p_{ij}$ the proportion among $group_i$ are equal ...
+##
 
-$H_1$ : For at least one column there're two row i and i' where the proability are not the same.
+## Normal Approximate Binomial
+```{r eval = T}
+################################################################
+#                   Biostatistical Methods I                   #
+#               Inferences for One-Sample Proportions          #
+#                      Author: Cody Chiuzan                    #
+################################################################
 
-$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}$
+# Normal Approximation: Observe the shape of different Binomial distributions with varying n and p.
 
-```{r}
-$H_0 :p_{1j} =p_{2j}=...=p_{ij}$ the proportion among $group_i$ are equal ...
+#1
+par(mfrow = c(1, 2))
+plot(
+  0:50,
+  dbinom(0:50, 10, 0.5),
+  type = 'h',
+  ylim = c(0, 0.50),
+  xlab = 'X',
+  main = 'Bin(10,0.5)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
 
-$H_1$ : For at least one column there're two row i and i' where the proability are not the same.
+plot(
+  0:50,
+  dbinom(0:50, 30, 0.5),
+  type = 'h',
+  ylim = c(0, 0.50),
+  xlab = 'X',
+  main = 'Bin(30,0.5)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
 
-$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}$
+#2
+par(mfrow = c(1, 2))
+plot(
+  0:50,
+  dbinom(0:50, 10, 0.10),
+  type = 'h',
+  ylim = c(0, 0.50),
+  xlab = 'X',
+  main = 'Bin(10,0.1)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
+
+plot(
+  0:50,
+  dbinom(0:50, 50, 0.10),
+  type = 'h',
+  ylim = c(0, 0.50),
+  xlab = 'X',
+  main = 'Bin(50,0.1)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
+
+#3
+par(mfrow = c(1, 2))
+plot(
+  0:50,
+  dbinom(0:50, 10, 0.02),
+  type = 'h',
+  ylim = c(0, 0.8),
+  xlab = 'X',
+  main = 'Bin(10,0.02)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
+
+plot(
+  0:50,
+  dbinom(0:50, 50, 0.02),
+  type = 'h',
+  ylim = c(0, 0.8),
+  xlab = 'X',
+  main = 'Bin(50,0.02)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
+
+#4
+par(mfrow = c(1, 2))
+plot(
+  0:50,
+  dbinom(0:50, 10, 0.95),
+  type = 'h',
+  ylim = c(0, 0.8),
+  xlab = 'X',
+  main = 'Bin(10,0.95)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
+
+plot(
+  0:50,
+  dbinom(0:50, 50, 0.95),
+  type = 'h',
+  ylim = c(0, 0.8),
+  xlab = 'X',
+  main = 'Bin(50,0.95)',
+  ylab = 'P(X)',
+  lwd = 3,
+  cex.lab = 1.5,
+  cex.axis = 2,
+  cex.main = 2
+)
+
+################################################################
+# In a survey of 300 randomly selected drivers, 125 claimed that
+# they regularly wear seat belts. Can we conclude from these data
+# that the population proportion who regularly wear seat belts is 0.50?
+# Perform a hypothesis test and
+# Construct a 95% confidence interval for the true population proportion.
+################################################################
+
+# p_hat=125/300
+# p0=0.50
+
+
+# Prop.test performs a chi-squared test and not a z-test.
+prop.test(125, 300, p = 0.5)
+
+
+# Create your own function to perform a one-sample proportion test
+# and create a 100(1-alpha) CI using the Normal Approximation
+
+one.proptest_norm <-
+  function(x,
+           n,
+           p = NULL,
+           conf.level = 0.95,
+           alternative = "less") {
+    # x the number of 'cases' in the sample
+    # n the total sample size
+    # p is the hypothesized value
+    
+    z.stat <- NULL
+    cint <- NULL
+    p.val <- NULL
+    phat <- x / n
+    qhat <- 1 - phat
+    
+    if (length(p) > 0) {
+      q <- 1 - p
+      SE.phat <- sqrt((p * q) / n)
+      z.stat <- (phat - p) / SE.phat
+      
+      p.val <- pnorm(z.stat)
+      
+      if (alternative == "two.sided") {
+        p.val <- p.val * 2
+      }
+      
+      if (alternative == "greater") {
+        p.val <- 1 - p.val
+      }
+    } else {
+      # Construct a confidence interval
+      SE.phat <- sqrt((phat * qhat) / n)
+    }
+    cint <-
+      phat + c(-1 * ((qnorm(((1 - conf.level) / 2
+      ) + conf.level)) * SE.phat),
+      ((qnorm(((1 - conf.level) / 2
+      ) + conf.level)) * SE.phat))
+    
+    return(list(
+      estimate = phat,
+      z.stat = z.stat,
+      p.val = p.val,
+      cint = cint
+    ))
+  }
+
+# In our example:
+
+one.proptest_norm(125, 300, 0.5, alternative = "two.sided")
+
+# P-hat estimate
+#0.417
+
+# Z-statistic: z.stat
+# -2.886
+
+#$p.val
+#0.004
+
+# 95 % CI: (0.360, 0.473)
+
+
+####################################################################
+#       Perform an Exact test, no normal approximation             #
+#          This function uses Clopper-Pearson method               #
+####################################################################
+
+binom.test(125,
+           300,
+           p = 0.5,
+           alternative = "two.sided",
+           conf.level = 0.95)
+
+# 95% Exact CI: (0.360, 0.474)
+
+# Exact p-value: 0.004
+```
+
+
+## Contingency Table Method
+```{r eval = T}
+#################################################################
+#                      Biostatistical Methods I                 #
+#          Contingency Tables: Tests for Categorical Data       #
+#                          Author: Cody Chiuzan                 #
+#################################################################
+
+################################################################
+#                      Chi-Squared Test                        #
+################################################################
+
+# Marijuana usage among colleg students
+# Chi-squared test for homogeneity
+
+drug_data <-
+  matrix(
+    c(57, 50, 43, 57, 58, 20, 56, 45, 24, 45, 22, 33),
+    nrow = 4,
+    ncol = 3,
+    byrow = T,
+    dimnames = list(
+      c("freshman", "sophomore", "junior", "senior"),
+      c("experimental", "casual", "modheavy")
+    )
+  )
+
+drug_data
+
+chisq.test(drug_data)
+
+# X-squared = 19.369, df = 6, p-value = 0.003584
+# Critical value: qchisq(0.95,6) = 12.59
+
+# We reject the null hypothesis and conclude that the proportions of marijuana usage are different among classes
+
+
+###
+# Association b/w pelvic inflammatory disease and ectopic pregnancy
+# Chi-squared test for independence
+
+preg_data <- matrix(
+  c(28, 6, 251, 273),
+  nrow = 2,
+  ncol = 2,
+  byrow = T,
+  dimnames = list(c("PID", "No PID"),
+                  c("Ect Preg", "No Ect Preg"))
+)
+
+
+preg_data
+
+chisq.test(preg_data)
+# Get the expected values: chisq.test(preg_data)$expected
+
+
+# X-squared with Yates' correction
+# X-squared=13.81, df=1, p-value=0.0002
+# Critical value: qchisq(0.95,1) = 3.84
+
+# We reject the null and conclude that there is sufficient evidence that PID and ectopic pregnancy are associated.
+
+
+###
+# What if we have raw data? How do we perform a chi-squared test?
+# Use R data 'quine' (library MASS) to compare gender distribution between ethnicities.
+
+library(MASS)
+data(quine)
+names(quine)
+
+# Create a 2x2 table
+table(quine$Sex, quine$Eth)
+
+# Compute row percentages
+prop.table(table(quine$Sex, quine$Eth), 1)
+
+# Chi-squared without continuity correction.
+chisq.test(table(quine$Sex, quine$Eth), correct = F)
+
+# X-squared = 0.004, df = 1, p-value = 0.949. Not a significant difference.
+
+# Chi-squared with continuity correction.
+chisq.test(table(quine$Sex, quine$Eth), correct = T)
+
+# X-squared ~ 0, df = 1, p-value = 1. Not a significant difference.
+
+#################################################################
+#                      Biostatistical Methods I                 #
+#          Contingency Tables: Tests for Categorical Data       #
+#                          Author: Cody Chiuzan                 #
+#################################################################
+
+###############################################################
+#      Fisher's Exact test for small cell counts (Eij < 5)    #
+###############################################################
+
+# Tea-time experiment
+# One-tailed test: calculations were also made in the lecture notes
+
+tea_exp <- matrix(c(3, 1, 1, 3), nrow = 2)
+
+fisher.test(tea_exp, alternative = "greater")
+# P-val=0.2429, fail to conclude discriminating ability
+
+# Two-sided Fisher test
+fisher.test(tea_exp)
+# P-val=0.4857
+# CI is for the odds ratio, not difference in proportions
+
+# What if we used a chi-square instead? Not ideal as the exp freq are <5
+chisq.test(tea_exp)
+# P-val=0.4795
+
+# Notice that the two-sided p-value from Fisher is greater than the one generated by chi-square
+# This supports the conclusion that Fisher Exat Test is more conservative (harder to reject)
+
+
+
+practice_data <- matrix(c(1, 8, 9, 3), nrow = 2,
+                        dimnames = list(c("diet", "non-diet"), c("men", "women")))
+
+chisq.test(practice_data)
+# Pearson's Chi-squared test with Yates' continuity correction for 2X2 table
+# X-squared = 6.0494, df = 1, p-value = 0.01391
+# Warning message:
+# In chisq.test(practice_data) : Chi-squared approximation may be incorrect
+
+fisher.test(practice_data)
+# Fisher's Exact Test for Count Data
+# p-value = 0.007519  # Notice the difference in p-values b/w chi-squared and Fisher
+
+
+
+###############################################################
+#      McNemar Test for binomial matched-pair data            #
+#               Normal approximation                          #
+###############################################################
+
+# Two procedures are tested on the same 75 subjects
+# in order to identify the absence/presence of the disease
+
+procedure_data <- matrix(
+  c(41, 8, 14, 12),
+  nrow = 2,
+  byrow = T,
+  dimnames = list(c("positive", "negative"), c("positive", "negative"))
+)
+
+mcnemar.test(procedure_data)
+
+# McNemar's Chi-squared test with continuity correction
+# McNemar's Chi-squared = 1.1364, df = 1, p-value = 0.2864
+
+# What if you performed a chi-squared test instead?
+chisq.test(procedure_data)
+
+# X-squared = 6.278, df = 1, p-value = 0.01222
+# Notice that the conclusions would be totally different.
 ```
 
