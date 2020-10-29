@@ -10,33 +10,33 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = F)
 ```
 
 
-# Distribution
+# Distribution {.tabset}
 
-### Binomial
+## Binomial
 $$
 P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}
 $$
 ```{r}
-#$P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}$
+$P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}$
 ```
 
 
-### Normal Distribution
+## Normal Distribution
 
 $P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 ```{r}
-#$P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
+$P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 ```
 
 
 
 # One Group Testing
 
-## t-test 
+## t-test {.tabset}
 
 ### left tailed
 
@@ -57,63 +57,96 @@ $Fail ~ reject ~ H_0 ~ if ~ t>t_{n-1,\alpha}$
 $CI : (-\infty,\bar{x} - t_{df,\alpha}*sd/\sqrt{n})$
 
 ```{r}
-#$H_0$: there's no difference betwee sample mean and the true mean
+$H_0$: there's no difference betwee sample mean and the true mean
 
-#$H_1$: the sample mean is lower than the true mean
+$H_1$: the sample mean is lower than the true mean
 
-#$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
+$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
 
-#$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
+$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
 
-#$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
+$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
 
-#$Reject ~ H_0 ~ if ~ t<t_{n-1,\alpha}$
+$Reject ~ H_0 ~ if ~ t<t_{n-1,\alpha}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ t>t_{n-1,\alpha}$
+$Fail ~ reject ~ H_0 ~ if ~ t>t_{n-1,\alpha}$
 
-#$CI : (-\infty,\bar{x} - t_{df,\alpha}*sd/\sqrt{n})$
+$CI : (-\infty,\bar{x} - t_{df,\alpha}*sd/\sqrt{n})$
 ```
 
 
 ### right tailed
 
+$H_0$: there's no difference betwee sample mean and the true mean
+
+$H_1$: the sample mean is greater than the true mean
+
+$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
+
+$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
+
+$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
+
+$Reject ~ H_0 ~ if ~ t>t_{n-1,1-\alpha}$
+
+$Fail ~ reject ~ H_0 ~ if ~ t<t_{n-1,1-\alpha}$
+
+$CI : (\bar{x} + t_{df,1-\alpha}*sd/\sqrt{n},\infty)$
+
 ```{r}
-#$H_0$: there's no difference betwee sample mean and the true mean
+$H_0$: there's no difference betwee sample mean and the true mean
 
-#$H_1$: the sample mean is greater than the true mean
+$H_1$: the sample mean is greater than the true mean
 
-#$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
+$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
 
-#$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
+$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
 
-#$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
+$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
 
-#$Reject ~ H_0 ~ if ~ t>t_{n-1,1-\alpha}$
+$Reject ~ H_0 ~ if ~ t>t_{n-1,1-\alpha}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ t<t_{n-1,1-\alpha}$
+$Fail ~ reject ~ H_0 ~ if ~ t<t_{n-1,1-\alpha}$
 
-#$CI : (\bar{x} + t_{df,1-\alpha}*sd/\sqrt{n},\infty)$
+$CI : (\bar{x} + t_{df,1-\alpha}*sd/\sqrt{n},\infty)$
 ```
 
 
 ### two-side
 
+$H_0$: there's no difference betwee sample mean and the true mean
+
+$H_1$: the sample mean is different from the true mean
+
+$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
+
+$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
+
+$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
+
+$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
+
+$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
+
+$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{x} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
+
+
 ```{r}
-#$H_0$: there's no difference betwee sample mean and the true mean
+$H_0$: there's no difference betwee sample mean and the true mean
 
-#$H_1$: the sample mean is different from the true mean
+$H_1$: the sample mean is different from the true mean
 
-#$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
+$\bar{x} = \frac{\sum_{i=1}^n{x_i}}{n}$
 
-#$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
+$s_d = \sqrt{\sum_{i=1}^n{(x_i - \bar{x})^2}/(n-1)}$
 
-#$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
+$t = \frac{\bar{x} - 0}{s_d/\sqrt{n}}$
 
-#$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
+$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
+$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
 
-#$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n})$
+$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{x} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
 
 ```
 
@@ -132,33 +165,31 @@ $Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
 
 $Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
 
-$CI : (\bar{d} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} - t_{df,1-\alpha/2}*sd/\sqrt{n})$
+$CI : (\bar{d} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
 
 
 ```{r}
-#$H_0$: there's no difference betwee difference
+$H_0$: there's no difference betwee difference
 
-#$H_1$: the difference is different
+$H_1$: the difference is different
 
-#$\bar{d} = \frac{\sum_{i=1}^n{d_i}}{n}$
+$\bar{d} = \frac{\sum_{i=1}^n{d_i}}{n}$
 
-#$s_d = \sqrt{\sum_{i=1}^n{(d_i - \bar{d})^2}/(n-1)}$
+$s_d = \sqrt{\sum_{i=1}^n{(d_i - \bar{d})^2}/(n-1)}$
 
-#$t = \frac{\bar{d} - 0}{s_d/\sqrt{n}}$
+$t = \frac{\bar{d} - 0}{s_d/\sqrt{n}}$
 
-#$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
+$Reject ~ H_0 ~ if ~ |t|<t_{n-1,1-\alpha/2}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
+$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{n-1,1 - \alpha/2}$
 
-#$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} - t_{df,1-\alpha/2}*sd/\sqrt{n})$
+$CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\sqrt{n})$
 ```
 
 
 # Two Group testing
 
-## t-test
-
-## Two group
+## Two group {.tabset}
 
 ### variance test
 
@@ -177,22 +208,25 @@ $Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F<F_{n_1-1,n_2-1,\alpha
 $Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2}$
 
 ```{r}
-#$H_0$: the variances between group are the equal(no difference)
+$H_0$: the variances between group are the equal(no difference)
     
-#$H_1$: the variances between group are not the equal(there's difference)
+$H_1$: the variances between group are not the equal(there's difference)
 
-#$s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
+$s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
 
-#$s_{x_2} = \sqrt{\sum_{j=1}^{n_2}(x_i - \bar{x_2})^2/(n_2-1)}$
+$s_{x_2} = \sqrt{\sum_{j=1}^{n_2}(x_i - \bar{x_2})^2/(n_2-1)}$
 
-#$F = s_1^2/s_2^2  \sim F_{n_1-1,n_2-1}$
+$F = s_1^2/s_2^2  \sim F_{n_1-1,n_2-1}$
 
-#$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F<F_{n_1-1,n_2-1,\alpha/2}$
+$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F<F_{n_1-1,n_2-1,\alpha/2}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2}$
+$Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2}$
 ```
 
 ### t-test with equal variance
+$H_0$: the means between group are the equal(no difference)
+    
+$H_1$: the means between group are not the equal(there's difference)
 
 $s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
 
@@ -202,21 +236,28 @@ $Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
 
 $Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
 
-$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
+$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
 
 ```{r}
-#$s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
+$H_0$: the means between group are the equal(no difference)
+    
+$H_1$: the means between group are not the equal(there's difference)
 
-#$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
+$s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
 
-#$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
+$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
+$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
 
-#$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
+$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
+
+$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
 ```
 
 ### t-test with unequal variance
+$H_0$: the means between group are the equal(no difference)
+    
+$H_1$: the means between group are not the equal(there's difference)
 
 $\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
 
@@ -228,19 +269,79 @@ $Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
 
 $Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
 
-$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
+$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
 
 ```{r}
-#$\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
+$H_0$: the means between group are the equal(no difference)
+    
+$H_1$: the means between group are not the equal(there's difference)
 
-#$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
+$\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
 
-#$d' = round(d'') = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
+$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
 
-#$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
+$d' = round(d'') = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
 
-#$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
+$Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
 
-#$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
+$Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
+
+$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
+```
+
+# Multigroup Camparison {.tabset}
+
+## ANOVA
+$H_0$ : there's no difference between groups
+
+$H_1$ : at least one group is different from the other groups
+
+$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
+
+$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
+
+$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
+
+$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
+
+$F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
+
+$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
+
+$Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
+```{r}
+$H_0$ : there's no difference between groups
+
+$H_1$ : at least one group is different from the other groups
+
+$Between~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2$
+
+$Within~Sum~of~Square = \sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2$
+
+$Between~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(\bar{y_i} - \bar{\bar{y}})^2}{k-1}=\sum_i^kn_i\bar{y_i}^2-\frac{y_{..}^2}{n}$
+
+$Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}=\sum_i^k(n_i-1)s_i^2$
+  
+$F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)$
+
+$Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha}$
+
+$Fail ~ reject ~ H_0 ~ if ~<F_{n_1-1,n_2-1,1-\alpha}$
+```
+
+## Homogeneity Chi-sq test
+
+$H_0 :p_{1j} =p_{2j}=...=p_{ij}$
+
+$H_1$ : For at least one column there're two row i and i' where the proability are not the same.
+
+$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}$
+
+```{r}
+$H_0 :p_{1j} =p_{2j}=...=p_{ij}$
+
+$H_1$ : For at least one column there're two row i and i' where the proability are not the same.
+
+$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}$
 ```
 
