@@ -190,9 +190,9 @@ $CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\
 
 ## variance test
 
-$H_0$: the variances between group are the equal(no difference)
+$H_0$: the variances between group are equal(no difference)
     
-$H_1$: the variances between group are not the equal(there's difference)
+$H_1$: the variances between group are not equal(there's difference)
 
 $s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
 
@@ -205,9 +205,9 @@ $Reject ~ H_0 ~ if ~ F>F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F<F_{n_1-1,n_2-1,\alpha
 $Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2}$
 
 ```{r}
-$H_0$: the variances between group are the equal(no difference)
+$H_0$: the variances between group are equal(no difference)
     
-$H_1$: the variances between group are not the equal(there's difference)
+$H_1$: the variances between group are not equal(there's difference)
 
 $s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
 
@@ -221,44 +221,44 @@ $Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}<F<F_{n_1-1,n_2-1,1-\alpha/2
 ```
 
 ## t-test with equal variance
-$H_0$: the means between group are the equal(no difference)
+$H_0$: the means between group are equal(no difference)
     
-$H_1$: the means between group are not the equal(there's difference)
+$H_1$: the means between group are not equal(there's difference)
 
 $s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
 
-$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
+$t = \frac{\bar{X_1} - \bar{X_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
 
 $Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
 
 $Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
 
-$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
+$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
 
 ```{r}
-$H_0$: the means between group are the equal(no difference)
+$H_0$: the means between group are equal(no difference)
     
-$H_1$: the means between group are not the equal(there's difference)
+$H_1$: the means between group are not equal(there's difference)
 
 $s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
 
-$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
+$t = \frac{\bar{X_1} - \bar{X_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
 
 $Reject ~ H_0 ~ if ~ |t|>t_{df,1-\alpha/2}$
 
 $Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
 
-$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
+$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$
 ```
 
 ## t-test with unequal variance
-$H_0$: the means between group are the equal(no difference)
+$H_0$: the means between group are equal(no difference)
     
-$H_1$: the means between group are not the equal(there's difference)
+$H_1$: the means between group are not equal(there's difference)
 
 $\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
 
-$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
+$t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
 
 $d' = round(d'') = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
 
@@ -269,13 +269,13 @@ $Fail ~ reject ~ H_0 ~ if ~ |t|<t_{df,1-\alpha/2}$
 $CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})$
 
 ```{r}
-$H_0$: the means between group are the equal(no difference)
+$H_0$: the means between group are equal(no difference)
     
-$H_1$: the means between group are not the equal(there's difference)
+$H_1$: the means between group are not equal(there's difference)
 
 $\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
 
-$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
+$t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d''}$
 
 $d' = round(d'') = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
 

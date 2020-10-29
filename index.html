@@ -530,16 +530,16 @@ $CI : (\bar{x} - t_{df,1-\alpha/2}*sd/\sqrt{n} ,\bar{d} + t_{df,1-\alpha/2}*sd/\
 <h1>Two Group testing</h1>
 <div id="variance-test" class="section level2">
 <h2>variance test</h2>
-<p><span class="math inline">\(H_0\)</span>: the variances between group are the equal(no difference)</p>
-<p><span class="math inline">\(H_1\)</span>: the variances between group are not the equal(there’s difference)</p>
+<p><span class="math inline">\(H_0\)</span>: the variances between group are equal(no difference)</p>
+<p><span class="math inline">\(H_1\)</span>: the variances between group are not equal(there’s difference)</p>
 <p><span class="math inline">\(s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}\)</span></p>
 <p><span class="math inline">\(s_{x_2} = \sqrt{\sum_{j=1}^{n_2}(x_i - \bar{x_2})^2/(n_2-1)}\)</span></p>
 <p><span class="math inline">\(F = s_1^2/s_2^2 \sim F_{n_1-1,n_2-1}\)</span></p>
 <p><span class="math inline">\(Reject ~ H_0 ~ if ~ F&gt;F_{n_1-1,n_2-1,1-\alpha/2} ~ OR ~ F&lt;F_{n_1-1,n_2-1,\alpha/2}\)</span></p>
 <p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}&lt;F&lt;F_{n_1-1,n_2-1,1-\alpha/2}\)</span></p>
-<pre class="r"><code>$H_0$: the variances between group are the equal(no difference)
+<pre class="r"><code>$H_0$: the variances between group are equal(no difference)
     
-$H_1$: the variances between group are not the equal(there&#39;s difference)
+$H_1$: the variances between group are not equal(there&#39;s difference)
 
 $s_{x_1} = \sqrt{\sum_{i=1}^{n_1}(x_i - \bar{x_1})^2/(n_1-1)}$
 
@@ -553,44 +553,44 @@ $Fail ~ reject ~ H_0 ~ if ~ F_{n_1-1,n_2-1,\alpha/2}&lt;F&lt;F_{n_1-1,n_2-1,1-\a
 </div>
 <div id="t-test-with-equal-variance" class="section level2">
 <h2>t-test with equal variance</h2>
-<p><span class="math inline">\(H_0\)</span>: the means between group are the equal(no difference)</p>
-<p><span class="math inline">\(H_1\)</span>: the means between group are not the equal(there’s difference)</p>
+<p><span class="math inline">\(H_0\)</span>: the means between group are equal(no difference)</p>
+<p><span class="math inline">\(H_1\)</span>: the means between group are not equal(there’s difference)</p>
 <p><span class="math inline">\(s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}\)</span></p>
-<p><span class="math inline">\(t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\)</span></p>
+<p><span class="math inline">\(t = \frac{\bar{X_1} - \bar{X_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}\)</span></p>
 <p><span class="math inline">\(Reject ~ H_0 ~ if ~ |t|&gt;t_{df,1-\alpha/2}\)</span></p>
 <p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~ |t|&lt;t_{df,1-\alpha/2}\)</span></p>
-<p><span class="math inline">\(CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )\)</span></p>
-<pre class="r"><code>$H_0$: the means between group are the equal(no difference)
+<p><span class="math inline">\(CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )\)</span></p>
+<pre class="r"><code>$H_0$: the means between group are equal(no difference)
     
-$H_1$: the means between group are not the equal(there&#39;s difference)
+$H_1$: the means between group are not equal(there&#39;s difference)
 
 $s_{pool} = \frac{(n_1-1)s_1 + (n_2 -1)s_2}{n_1+n_2-2}$
 
-$t = \frac{\bar{X_1} - \bar{x_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
+$t = \frac{\bar{X_1} - \bar{X_2}}{s_{pool}\times\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$
 
 $Reject ~ H_0 ~ if ~ |t|&gt;t_{df,1-\alpha/2}$
 
 $Fail ~ reject ~ H_0 ~ if ~ |t|&lt;t_{df,1-\alpha/2}$
 
-$CI = (\bar{X_1}-\bar{x_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{x_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$</code></pre>
+$CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}s_{pool}/\sqrt{1/n_1+1/n_2} )$</code></pre>
 </div>
 <div id="t-test-with-unequal-variance" class="section level2">
 <h2>t-test with unequal variance</h2>
-<p><span class="math inline">\(H_0\)</span>: the means between group are the equal(no difference)</p>
-<p><span class="math inline">\(H_1\)</span>: the means between group are not the equal(there’s difference)</p>
+<p><span class="math inline">\(H_0\)</span>: the means between group are equal(no difference)</p>
+<p><span class="math inline">\(H_1\)</span>: the means between group are not equal(there’s difference)</p>
 <p><span class="math inline">\(\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})\)</span> if we know the population variance</p>
-<p><span class="math inline">\(t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d&#39;&#39;}\)</span></p>
+<p><span class="math inline">\(t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d&#39;&#39;}\)</span></p>
 <p><span class="math inline">\(d&#39; = round(d&#39;&#39;) = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}\)</span></p>
 <p><span class="math inline">\(Reject ~ H_0 ~ if ~ |t|&gt;t_{df,1-\alpha/2}\)</span></p>
 <p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~ |t|&lt;t_{df,1-\alpha/2}\)</span></p>
 <p><span class="math inline">\(CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}},\bar{X_1}-\bar{X_2} ~ + ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}})\)</span></p>
-<pre class="r"><code>$H_0$: the means between group are the equal(no difference)
+<pre class="r"><code>$H_0$: the means between group are equal(no difference)
     
-$H_1$: the means between group are not the equal(there&#39;s difference)
+$H_1$: the means between group are not equal(there&#39;s difference)
 
 $\bar{X_1} - \bar{X_2} \sim N(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2})$ if we know the population variance
 
-$t = \frac{\bar{X_1} - \bar{x_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d&#39;&#39;}$
+$t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}~\sim t_{d&#39;&#39;}$
 
 $d&#39; = round(d&#39;&#39;) = \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^2}{n_1}^2/(n_1-1)+\frac{s_2^2}{n_2}^2/(n_2-1)}$
 
