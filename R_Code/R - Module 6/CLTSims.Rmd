@@ -1,0 +1,306 @@
+---
+output:
+  html_document:
+    df_print: paged
+header-includes: \usepackage{graphicx} \usepackage{float} \usepackage{amsmath}
+---
+
+```{r setup, include = FALSE, warning = FALSE, message = FALSE}
+
+library("animation")
+library("magrittr")
+library("tidyverse")
+#library("patchwork") #Nice package for displaying multiple plots together
+```
+
+
+# Central Limit Theorem Simulations
+
+##1. Normally Distributed Random Variables 
+
+First, let's generate data from a normal distribution:
+
+$$X_i \stackrel{i.i.d.}{\sim} N(\mu, \sigma^2)$$
+
+where 
+
+$$\mu = 10 \ \ {\rm and}\ \ \sigma^2 = 36.$$
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+#Define mu and sigma
+mu <- 10
+sigma2 <- 36
+
+# Generate 100 normal random variables from N(10,36) to observe the underlying distribution
+N <- 100
+
+# Random sample data frame
+set.seed(4)
+norm.df <- tibble(
+  sample = rnorm(N, mu, sigma2),
+  id     = "Original Normal Distribution"
+)
+
+
+#Visualize
+norm.df %>%
+  ggplot(aes(x = sample, y = ..density.., fill = id)) +
+  geom_histogram(binwidth = 10, colour = "black", alpha = 0.1) +
+  geom_density(alpha = 0.4) +
+  labs(
+    x = sprintf("Xi ~ N(%i, %i)", mu, sigma2),
+    y = "Density",
+    title = "Histogram and Density Curve for the Original Normal Data") +
+  scale_fill_viridis_d("") +
+  theme(legend.position = "none")
+  
+
+```
+
+* What if we can only observe/sample 10 observations from this population?  
+
+* What if we repeatedly took samples of size 10 from the original population?
+
+* How would the means of each smaller sample be distributed, compare to the whole sample?  
+
+
+Generate and plot the mean sampling distribution of 100 random samples of size 10 (with replacement) from the original Normal distribution
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+# Generate 100 random samples of size 10 (with replacement) from the original distribution
+n.sample <- 100
+n        <- 10
+
+#Sample indices
+sample.indices   <- list()
+
+
+for (i in 1:n.sample) {
+  
+  sample.indices[[i]] <- sample(1:N, n, replace = TRUE) 
+  
+}
+
+#Take the mean of each sample and attach to original data frame
+
+norm.df <- bind_rows(norm.df,
+                     tibble(
+                       sample = map_dbl(.x = sample.indices,
+                                        ~mean(norm.df$sample[.x])),
+                       id     = "Sample Means Distribution"
+                     ))
+
+#Visualize
+norm.df %>%
+  ggplot(aes(x = sample, y = ..density.., fill = id)) +
+  geom_histogram(binwidth = 10, colour = "black", alpha = 0.2) +
+  geom_density(alpha = 0.4, adjust = 1.6) +
+  labs(
+    x = sprintf("Xi ~ N(%i, %i)", mu, sigma2),
+    y = "Density") +
+  scale_fill_viridis_d("Sample")
+```
+
+
+##2. Non-normally distributed random variables
+
+## Poisson Distribution
+
+Generate data from a Poisson distribution:
+
+$$X_i \stackrel{i.i.d.}{\sim} Pois(2)$$
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+
+# Generate 100 random variables from Pois(5) 
+N <- 100
+lambda <- 2
+
+# Random sample data frame
+set.seed(2)
+pois.df <- tibble(
+  sample = rpois(N, 5),
+  id     = "Original Poisson Distribution"
+)
+```
+
+Generate and plot the mean sampling distribution of 100 random samples of size 10 (with replacement) from the original Poisson distribution:
+```{r, echo = F, message = FALSE, warning=FALSE}
+
+n.sample <- 100
+n        <- 10
+
+#Sample indices
+sample.indices   <- list()
+
+
+for (i in 1:n.sample) {
+  
+  sample.indices[[i]] <- sample(1:N, n, replace = TRUE) 
+  
+}
+
+#Take the mean of each sample and attach to original data frame
+
+pois.df <- bind_rows(pois.df,
+                     tibble(
+                     sample = map_dbl(.x = sample.indices,
+                                        ~mean(pois.df$sample[.x])),
+                       id     = "Sample Means Distribution"
+                     ))
+
+#Visualize
+pois.df %>%
+  ggplot(aes(x = sample, y = ..density.., fill = id)) +
+  geom_histogram(bins=30, colour = "black", alpha = 0.2) +
+  geom_density(alpha = 0.4) +
+  labs(
+    x = sprintf("Xi ~ Pois(2)"),
+    y = "Density") +
+  scale_fill_viridis_d("Sample")
+```
+
+Generate and plot the mean sampling distribution of 100 random samples of size 30 (with replacement) from the original Poisson distribution:
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+
+n.sample <- 100
+n        <- 30
+
+#Sample indices
+sample.indices   <- list()
+
+
+for (i in 1:n.sample) {
+  
+  sample.indices[[i]] <- sample(1:N, n, replace = TRUE) 
+  
+}
+
+#Take the mean of each sample and attach to original data frame
+
+pois.df <- bind_rows(pois.df,
+                     tibble(
+                     sample = map_dbl(.x = sample.indices,
+                                        ~mean(pois.df$sample[.x])),
+                       id     = "Sample Means Distribution"
+                     ))
+
+#Visualize
+pois.df %>%
+  ggplot(aes(x = sample, y = ..density.., fill = id)) +
+  geom_histogram(bins=30, colour = "black", alpha = 0.2) +
+  geom_density(alpha = 0.4) +
+  labs(
+    x = sprintf("Xi ~ Pois(2)"),
+    y = "Density") +
+  scale_fill_viridis_d("Sample")
+```
+
+
+
+
+## Binomial Distribution
+
+Generate data from a Binomial distribution:
+
+$$X_i \stackrel{i.i.d.}{\sim} Bin(50,0.05)$$
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+
+# Generate 100 random variables from Bin(50,0.30) distribution 
+N <- 100
+nbin <- 50
+p <- 0.05
+
+# Random sample data frame
+set.seed(2)
+bin.df <- tibble(
+  sample = rbinom(N, nbin, p),
+  id     = "Original Binomial Distribution"
+)
+```
+
+Generate and plot the mean sampling distribution of 100 random samples of size 10 (with replacement) from the original Binomial distribution:
+```{r, echo = F, message = FALSE, warning=FALSE}
+
+n.sample <- 100
+n        <- 10
+
+#Sample indices
+sample.indices   <- list()
+
+
+for (i in 1:n.sample) {
+  
+  sample.indices[[i]] <- sample(1:N, n, replace = TRUE) 
+  
+}
+
+#Take the mean of each sample and attach to original data frame
+
+bin.df <- bind_rows(bin.df,
+                     tibble(
+                     sample = map_dbl(.x = sample.indices,
+                                        ~mean(bin.df$sample[.x])),
+                       id     = "Sample Means Distribution"
+                     ))
+
+#Visualize
+bin.df %>%
+  ggplot(aes(x = sample, y = ..density.., fill = id)) +
+  geom_histogram(bins=30, colour = "black", alpha = 0.2) +
+  geom_density(alpha = 0.4) +
+  labs(
+    x = sprintf("Xi ~ Bin(50,0.05)", mu, sigma2),
+    y = "Density") +
+  scale_fill_viridis_d("Sample")
+```
+
+
+Generate and plot the mean sampling distribution of 100 random samples of size 30 (with replacement) from the original Binomial distribution:
+```{r, echo = F, message = FALSE, warning=FALSE}
+
+n.sample <- 100
+n        <- 30
+
+#Sample indices
+sample.indices   <- list()
+
+
+for (i in 1:n.sample) {
+  
+  sample.indices[[i]] <- sample(1:N, n, replace = TRUE) 
+  
+}
+
+#Take the mean of each sample and attach to original data frame
+
+bin.df <- bind_rows(bin.df,
+                     tibble(
+                     sample = map_dbl(.x = sample.indices,
+                                        ~mean(bin.df$sample[.x])),
+                       id     = "Sample Means Distribution"
+                     ))
+
+#Visualize
+bin.df %>%
+  ggplot(aes(x = sample, y = ..density.., fill = id)) +
+  geom_histogram(bins=30, colour = "black", alpha = 0.2) +
+  geom_density(alpha = 0.4) +
+  labs(
+    x = sprintf("Xi ~ Bin(50,0.05)", mu, sigma2),
+    y = "Density") +
+  scale_fill_viridis_d("Sample")
+```
+
+
+
+
+
+
+
+
+
+
+

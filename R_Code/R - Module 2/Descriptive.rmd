@@ -1,0 +1,61 @@
+---
+title: "Table 1"
+output: html_document
+date: "09/15/2020"
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+rm(list = ls())
+library(arsenal)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+setwd("~/Desktop/DescriptiveStats")
+low_birth_all<-read.csv("lowbwt_ALL.csv")
+```
+
+# First table - not ideal
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+tab1 <- tableby( ~ age + bwt + smoke, data=low_birth_all)
+summary(tab1)
+```
+
+
+```{r, echo = F, message = FALSE, warning=FALSE}
+my_labels <- list(age = "Age(yrs)", bwt = "Birthweight(g)", smoke="Smoker", race="Race")
+
+# Clean the output
+my_controls <- tableby.control(
+               total = F,
+               test=F,  # No test p-values yet
+               numeric.stats = c("meansd", "medianq1q3", "range", "Nmiss2"),
+               cat.stats = c("countpct", "Nmiss2"),
+               stats.labels = list(
+               meansd = "Mean (SD)",
+               medianq1q3 = "Median (Q1, Q3)",
+               range = "Min - Max",
+               Nmiss2 = "Missing",
+               countpct = "N (%)"))
+
+# Make 'smoke' a factor to show N (%)
+birth_df<-low_birth_all %>% 
+          mutate(smoke=factor(smoke, labels=c("No","Yes"))) # Start labeling with 0 (increasing order)
+
+# Second table
+tab2 <- tableby( ~ age + bwt + smoke, data=birth_df, control=my_controls)
+summary(tab2, title = "Descriptive Statistics: Lowbirth Data", labelTranslations = my_labels, text=T)
+
+# Tabulation by race categories
+tab3 <- tableby( race ~ age + bwt + smoke, data=birth_df, control=my_controls)
+summary(tab3, title = "Descriptive Statistics: Lowbirth Data", labelTranslations = my_labels, text=T)
+```
+
