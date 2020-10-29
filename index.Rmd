@@ -13,6 +13,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, eval = F)
 ```
 
+R Code can be found in [here](./rcode.html)
 
 # Distribution {.tabset}
 
