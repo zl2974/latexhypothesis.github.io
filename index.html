@@ -613,7 +613,7 @@ $CI = (\bar{X_1}-\bar{X_2} ~ - ~ t_{df,1-\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{
 <p><span class="math inline">\(Within~Mean~Square = \frac{\sum_{i=1}^k\sum_{j=1}^{n_i}(y_{ij}-\bar{y_i})^2}{n-k}\)</span></p>
 <p><span class="math inline">\(F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)\)</span></p>
 <p><span class="math inline">\(Reject ~ H_0 ~ if ~ F&gt;F_{k-1,n-k,1-\alpha}\)</span></p>
-<p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~&lt;F_{k-1,n-k,1-\alpha}\)</span></p>
+<p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~F&lt;F_{k-1,n-k,1-\alpha}\)</span></p>
 <pre class="r"><code>$H_0$ : there&#39;s no difference between groups
 
 $H_1$ : at least one group is different from the other groups
@@ -630,7 +630,7 @@ $F_{statistics} = \frac{Between~Mean~Square}{Within~Mean~Square} \sim F(k-1,n-k)
 
 $Reject ~ H_0 ~ if ~ F&gt;F_{k-1,n-k,1-\alpha}$
 
-$Fail ~ reject ~ H_0 ~ if ~&lt;F_{k-1,n-k,1-\alpha}$</code></pre>
+$Fail ~ reject ~ H_0 ~ if ~F&lt;F_{k-1,n-k,1-\alpha}$</code></pre>
 </div>
 </div>
 <div id="proportion-testing" class="section level1 tabset">
@@ -643,11 +643,17 @@ $Fail ~ reject ~ H_0 ~ if ~&lt;F_{k-1,n-k,1-\alpha}$</code></pre>
 <p><span class="math inline">\(H_0 :p_{1j} =p_{2j}=...=p_{ij}\)</span> the proportion among <span class="math inline">\(group_i\)</span> are equal …</p>
 <p><span class="math inline">\(H_1\)</span> : For at least one column there’re two row i and i’ where the proability are not the same.</p>
 <p><span class="math inline">\(\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col_1)}\)</span></p>
+<p><span class="math inline">\(Reject ~ H_0 ~ if ~ \mathcal{X}^2&gt;\mathcal{X}^2_{(r-1))*(c-1),1-\alpha}\)</span></p>
+<p><span class="math inline">\(Fail ~ reject ~ H_0 ~ if ~\mathcal{X}^2&lt;\mathcal{X}^2_{(r-1))*(c-1),1-\alpha}\)</span></p>
 <pre class="r"><code>$H_0 :p_{1j} =p_{2j}=...=p_{ij}$ the proportion among $group_i$ are equal ...
 
 $H_1$ : For at least one column there&#39;re two row i and i&#39; where the proability are not the same.
 
-$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col-1)}$</code></pre>
+$\mathcal{X}^2 = \sum_i^{row}\sum_j^{col}\frac{(n_{ij}-E_{ij})^2}{E_{ij}} \sim \mathcal{X}^2_{df = (row-1)\times(col-1)}$
+  
+$Reject ~ H_0 ~ if ~ \mathcal{X}^2&gt;\mathcal{X}^2_{(r-1))*(c-1),1-\alpha}$
+
+$Fail ~ reject ~ H_0 ~ if ~\mathcal{X}^2&lt;\mathcal{X}^2_{(r-1))*(c-1),1-\alpha}$</code></pre>
 </div>
 <div id="independent-test" class="section level2">
 <h2>Independent test</h2>
