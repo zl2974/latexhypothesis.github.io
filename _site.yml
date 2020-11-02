@@ -2,6 +2,11 @@ name: "Yay internet!"
 output_dir: "."
 navbar:
   title: "Home"
+  left:
+    - text : "Latex"
+      href : index.html
+    - text : "Rcode"
+      href : rcode.html
   right:
     - text: "About"
       href: https://zl2974.github.io/about.html
