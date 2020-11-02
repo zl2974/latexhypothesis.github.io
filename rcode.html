@@ -359,22 +359,16 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="about.html">About</a>
+  <a href="https://zl2974.github.io/about.html">About</a>
 </li>
 <li>
-  <a href="plotly.html">Plotly</a>
-</li>
-<li>
-  <a href="dashboard.html">Dashboard</a>
-</li>
-<li>
-  <a href="mailto:&lt;bst-p8105@gmail.com&gt;">
+  <a href="mailto:&lt;zl2974@columbia.edu&gt;">
     <span class="fa fa-envelope fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="http://github.com/bst-p8105/">
+  <a href="http://github.com/zl2974">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -409,7 +403,7 @@ div.tocify {
 <h2>Binomial</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}\)</span></p>
 <pre class="r"><code>rbinom(5,10,0.3)
-## [1] 4 3 3 2 2
+## [1] 5 1 6 6 4
 qbinom(0.05,10,0.3)
 ## [1] 1
 pbinom(1,10,0.3)
@@ -421,7 +415,7 @@ dbinom(1,10,0.3)
 <h2>Normal Distribution</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}\)</span></p>
 <pre class="r"><code>rnorm(5)
-## [1] -1.696589158 -0.065865339 -0.030782002 -0.009796672 -0.448709291
+## [1] 1.478339 1.507209 1.485482 1.441360 1.345097
 qnorm(0.05)
 ## [1] -1.644854
 pnorm(1.96)
@@ -432,8 +426,8 @@ dnorm(1.96)
 </div>
 <div id="descriptive-statistics" class="section level1 tabset">
 <h1>Descriptive Statistics</h1>
-<div id="section" class="section level2">
-<h2></h2>
+<div id="hide" class="section level2">
+<h2>hide</h2>
 </div>
 <div id="table" class="section level2">
 <h2>Table</h2>
@@ -474,33 +468,33 @@ names(low_birth_all)</code></pre>
 <pre class="r"><code>dim(low_birth_all)</code></pre>
 <pre><code>## [1] 189  10</code></pre>
 <pre class="r"><code>summary(low_birth_all)</code></pre>
-<pre><code>##       low              age             lwt           race        smoke       
-##  Min.   :0.0000   Min.   :14.00   Min.   : 80.0   black:26   Min.   :0.0000  
-##  1st Qu.:0.0000   1st Qu.:19.00   1st Qu.:110.0   other:67   1st Qu.:0.0000  
-##  Median :0.0000   Median :23.00   Median :121.0   white:96   Median :0.0000  
-##  Mean   :0.3122   Mean   :23.24   Mean   :129.7              Mean   :0.3915  
-##  3rd Qu.:1.0000   3rd Qu.:26.00   3rd Qu.:140.0              3rd Qu.:1.0000  
-##  Max.   :1.0000   Max.   :45.00   Max.   :250.0              Max.   :1.0000  
-##        ht                ui              ftv              ptl        
-##  Min.   :0.00000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
-##  1st Qu.:0.00000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
-##  Median :0.00000   Median :0.0000   Median :0.0000   Median :0.0000  
-##  Mean   :0.06349   Mean   :0.1481   Mean   :0.4709   Mean   :0.1587  
-##  3rd Qu.:0.00000   3rd Qu.:0.0000   3rd Qu.:1.0000   3rd Qu.:0.0000  
-##  Max.   :1.00000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  
-##       bwt      
-##  Min.   : 709  
-##  1st Qu.:2414  
-##  Median :2977  
-##  Mean   :2945  
-##  3rd Qu.:3475  
-##  Max.   :4990</code></pre>
+<pre><code>##       low              age             lwt            race          
+##  Min.   :0.0000   Min.   :14.00   Min.   : 80.0   Length:189        
+##  1st Qu.:0.0000   1st Qu.:19.00   1st Qu.:110.0   Class :character  
+##  Median :0.0000   Median :23.00   Median :121.0   Mode  :character  
+##  Mean   :0.3122   Mean   :23.24   Mean   :129.7                     
+##  3rd Qu.:1.0000   3rd Qu.:26.00   3rd Qu.:140.0                     
+##  Max.   :1.0000   Max.   :45.00   Max.   :250.0                     
+##      smoke              ht                ui              ftv        
+##  Min.   :0.0000   Min.   :0.00000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.0000   1st Qu.:0.00000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.0000   Median :0.00000   Median :0.0000   Median :0.0000  
+##  Mean   :0.3915   Mean   :0.06349   Mean   :0.1481   Mean   :0.4709  
+##  3rd Qu.:1.0000   3rd Qu.:0.00000   3rd Qu.:0.0000   3rd Qu.:1.0000  
+##  Max.   :1.0000   Max.   :1.00000   Max.   :1.0000   Max.   :1.0000  
+##       ptl              bwt      
+##  Min.   :0.0000   Min.   : 709  
+##  1st Qu.:0.0000   1st Qu.:2414  
+##  Median :0.0000   Median :2977  
+##  Mean   :0.1587   Mean   :2945  
+##  3rd Qu.:0.0000   3rd Qu.:3475  
+##  Max.   :1.0000   Max.   :4990</code></pre>
 <pre class="r"><code>str(low_birth_all)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    189 obs. of  10 variables:
 ##  $ low  : int  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ age  : int  19 33 20 21 18 21 22 17 29 26 ...
 ##  $ lwt  : int  182 155 105 108 107 124 118 103 123 113 ...
-##  $ race : Factor w/ 3 levels &quot;black&quot;,&quot;other&quot;,..: 1 2 3 3 3 2 3 2 3 3 ...
+##  $ race : chr  &quot;black&quot; &quot;other&quot; &quot;white&quot; &quot;white&quot; ...
 ##  $ smoke: int  0 0 1 1 1 0 0 0 1 1 ...
 ##  $ ht   : int  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ ui   : int  1 0 0 1 1 0 0 0 0 0 ...
@@ -702,8 +696,8 @@ xtabs( ~ race + smoke + ht, data = low_birth_all)</code></pre>
 </div>
 <div id="t-test" class="section level1 tabset">
 <h1>T-Test</h1>
-<div id="section-1" class="section level2">
-<h2></h2>
+<div id="hide-1" class="section level2">
+<h2>hide</h2>
 </div>
 <div id="one-group" class="section level2">
 <h2>One Group</h2>
@@ -1007,8 +1001,8 @@ names(res)</code></pre>
 </div>
 <div id="multigroup-camparison" class="section level1 tabset">
 <h1>Multigroup Camparison</h1>
-<div id="section-2" class="section level2">
-<h2></h2>
+<div id="hide-2" class="section level2">
+<h2>hide</h2>
 </div>
 <div id="anova" class="section level2">
 <h2>ANOVA</h2>
@@ -1185,8 +1179,8 @@ summary(glht(res1), linfct = mcp(Group = &quot;Dunnett&quot;))</code></pre>
 </div>
 <div id="proportion" class="section level1 tabset">
 <h1>Proportion</h1>
-<div id="section-3" class="section level2">
-<h2></h2>
+<div id="hide-3" class="section level2">
+<h2>hide</h2>
 </div>
 <div id="normal-approximate-binomial" class="section level2">
 <h2>Normal Approximate Binomial</h2>

@@ -4,15 +4,11 @@ navbar:
   title: "Home"
   right:
     - text: "About"
-      href: about.html
-    - text: "Plotly"
-      href: plotly.html
-    - text: "Dashboard"
-      href: dashboard.html
+      href: https://zl2974.github.io/about.html
     - icon: fa-envelope fa-lg
-      href: mailto:<bst-p8105@gmail.com>
+      href: mailto:<zl2974@columbia.edu>
     - icon: fa-github fa-lg
-      href: http://github.com/bst-p8105/
+      href: http://github.com/zl2974
 output:
   html_document:
     theme: flatly

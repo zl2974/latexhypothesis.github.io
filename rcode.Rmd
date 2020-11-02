@@ -40,7 +40,7 @@ dnorm(1.96)
 
 # Descriptive Statistics {.tabset}
 
-##
+## hide
 ## Table
 ```{r}
 
@@ -189,7 +189,7 @@ xtabs( ~ race + smoke + ht, data = low_birth_all)
 
 # T-Test {.tabset}
 
-##
+## hide
 
 ## One Group 
 
@@ -453,7 +453,7 @@ names(res)
 
 # Multigroup Camparison {.tabset}
 
-##
+## hide
 
 ## ANOVA
 
@@ -552,7 +552,7 @@ summary(glht(res1), linfct = mcp(Group = "Dunnett"))
 
 # Proportion {.tabset}
 
-##
+## hide
 
 ## Normal Approximate Binomial
 ```{r eval = T}
