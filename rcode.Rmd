@@ -9,6 +9,17 @@ output:
     code_folding: show
 ---
 
+```{css, echo=FALSE}
+pre {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 300px;
+}
+```
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       eval = T)

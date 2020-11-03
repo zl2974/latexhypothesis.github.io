@@ -402,13 +402,23 @@ div.tocify {
 </div>
 
 
+<style type="text/css">
+pre {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 300px;
+}
+</style>
 <div id="distribution" class="section level1 tabset">
 <h1>Distribution</h1>
 <div id="binomial" class="section level2">
 <h2>Binomial</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}\)</span></p>
 <pre class="r"><code>rbinom(5,10,0.3)
-## [1] 5 6 3 3 3
+## [1] 5 5 4 6 0
 qbinom(0.05,10,0.3)
 ## [1] 1
 pbinom(1,10,0.3)
@@ -420,7 +430,7 @@ dbinom(1,10,0.3)
 <h2>Normal Distribution</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}\)</span></p>
 <pre class="r"><code>rnorm(5)
-## [1]  0.7854569 -0.1618947  0.7569905 -1.5005160  0.1340393
+## [1]  0.58409531 -0.03829504  0.55386235 -0.87210650 -0.17104412
 qnorm(0.05)
 ## [1] -1.644854
 pnorm(1.96)
@@ -739,7 +749,7 @@ hist(sample_means_exp1,
      xlab = &quot;Sample Means&quot;,
      prob = T)
 lines(density(sample_means_exp1), col = &quot;darkblue&quot;, lwd = 2)</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code># Draw 1000 samples of size 50 from an underlying exponential distribution with parameter lambda=0.3
 # Calculate their means/var and draw a histogram to vizualize the sample means distribution
 
@@ -761,7 +771,7 @@ hist(sample_means_exp2,
      xlab = &quot;Sample Means&quot;,
      prob = T)
 lines(density(sample_means_exp2), col = &quot;darkblue&quot;, lwd = 2)</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
 <pre class="r"><code># Construct a 95% CI for the population mean with n=10, X_bar=175, and known sigma=15
 # Sigma represents the pooulation standard deviation
 # 1-(alpha/2)=1-(0.05/2)=0.975
@@ -1087,7 +1097,7 @@ boxplot(
   xlab = &quot;Experimental Group&quot;,
   ylab = &quot;Insulin levels&quot;
 )</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code># Perform an ANOVA test: are the mean insulin levels significantly different?
 # Need to mention the independent variable as a factor; o/w will be considered continuous
 # Function lm() is broader, including linear regression models
@@ -1161,7 +1171,7 @@ Tukey_comp</code></pre>
 ## 5-3  2.0995833  0.1473919 4.051775 0.0304080
 ## 5-4  0.2883929 -1.5824211 2.159207 0.9910177</code></pre>
 <pre class="r"><code>plot(Tukey_comp)</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code># Dunnett&#39;s test: multiple comparisons with a specified control (here group #1)
 summary(glht(res1), linfct = mcp(Group = &quot;Dunnett&quot;))</code></pre>
 <pre><code>## Warning in chkdots(...): Argument(s) &#39;linfct&#39; passed to &#39;...&#39; are ignored</code></pre>
@@ -1226,7 +1236,7 @@ plot(
   cex.axis = 2,
   cex.main = 2
 )</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code>#2
 par(mfrow = c(1, 2))
 plot(
@@ -1256,7 +1266,7 @@ plot(
   cex.axis = 2,
   cex.main = 2
 )</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 <pre class="r"><code>#3
 par(mfrow = c(1, 2))
 plot(
@@ -1286,7 +1296,7 @@ plot(
   cex.axis = 2,
   cex.main = 2
 )</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-10-3.png" width="672" /></p>
 <pre class="r"><code>#4
 par(mfrow = c(1, 2))
 plot(
@@ -1316,7 +1326,7 @@ plot(
   cex.axis = 2,
   cex.main = 2
 )</code></pre>
-<p><img src="rcode_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
+<p><img src="rcode_files/figure-html/unnamed-chunk-10-4.png" width="672" /></p>
 <pre class="r"><code>################################################################
 # In a survey of 300 randomly selected drivers, 125 claimed that
 # they regularly wear seat belts. Can we conclude from these data
