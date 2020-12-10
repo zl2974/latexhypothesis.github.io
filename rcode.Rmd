@@ -355,7 +355,7 @@ t.test(low_birth_all$bwt, alternative = 'less', mu = 3000)
 #           Author: Cody Chiuzan; Date: Sept 23, 2019          #
 ################################################################
 
-rm(list = ls())
+
 
 ###########################################################################
 #   Conduct a two-sample paired t-test to assess the effect of a new diet #
@@ -955,5 +955,874 @@ chisq.test(procedure_data)
 
 # X-squared = 6.278, df = 1, p-value = 0.01222
 # Notice that the conclusions would be totally different.
+```
+
+# Regression {.tabset}
+
+## Hide
+
+## SLR
+```{r regresssion}
+################################################################
+#                     Biostatistical Methods I                 #
+#                     Simple Linear Regression                 #
+################################################################
+
+
+library(faraway)
+library(broom)
+library(dplyr)
+
+# Load data diabetes
+data(diabetes)
+names(diabetes)
+summary(diabetes)
+
+# Plot (Y) chol vs age (X)
+plot(diabetes$age, diabetes$chol)
+
+reg_diab<-lm(diabetes$chol~diabetes$age)
+
+# Summarize regression
+summary(reg_diab)
+
+tidy(reg_diab)
+
+glance(reg_diab)
+
+# Regression objects
+names(reg_diab)
+
+# Get fitted.values
+reg_diab$fitted.values
+
+# Scatterplot and regression line overlaid
+plot(diabetes$age, diabetes$chol)
+abline(reg_diab,lwd=2,col=2)
+
+
+# Calculate the regression coefficient estimates 'by hand'.
+set.seed(1)
+
+data = data.frame(x = rnorm(30, 3, 3)) %>% mutate(y = 2+.6*x +rnorm(30, 0, 1))
+linmod = lm(y~x, data = data)
+
+summary(linmod)
+
+
+beta1 = with(data, sum((x - mean(x))*(y - mean(y))) / sum((x - mean(x))^2))
+beta0 = with(data, mean(y) - beta1*mean(x))
+c(beta0, beta1)
+
+# Notice the same values
+
+################################################################
+#                     Biostatistical Methods I                 #
+#             Simple Linear Regression - Inferences            #
+################################################################
+# Load libraries
+library(faraway)
+library(broom)
+library(dplyr)
+
+# Read data 'Hospitals'
+data_hosp<-read.csv(here::here("R_Code","R - Module 17","Hospital.csv"))
+names(data_hosp)
+
+# Look at data structure
+str(data_hosp)
+
+# Scatter plot (Y) vs (X)
+# LOS: length of stay(Y)
+# BEDS: number of beds(X)
+
+data_hosp %>% 
+   ggplot(aes(BEDS, LOS)) + geom_point(color='blue') + theme_bw(base_size=20) + 
+   labs(x="Number of beds", y="Length of stay (days)")
+
+# Simple linear regression
+reg_hos<-lm(data_hosp$LOS~data_hosp$BEDS)
+
+# Analyze the regression results
+summary(reg_hos)
+
+# Get the ANOVA table
+anova(reg_hos)
+
+# Residual st error: MSE=sigma^2
+glance(reg_hos)$sigma
+
+
+# Scatter plot with regression line overlaid  
+data_hosp %>% 
+  ggplot(aes(BEDS, LOS)) + geom_point(color='blue') + theme_bw(base_size=20) +
+  geom_smooth(method='lm', se=FALSE, color='red') +
+  labs(x="Number of beds", y="Length of stay (days)")
+
+# Scatter plot with regression line overlaid and 95% confidence bands
+data_hosp %>% 
+  ggplot(aes(BEDS, LOS)) + geom_point(color='blue') + theme_bw(base_size=20) +
+  geom_smooth(method='lm', se=TRUE, color='red') +
+  labs(x="Number of beds", y="Length of stay (days)")
+
+
+# How do we calculate the 95% CI for the slope?
+# Interpretation: 95% CI for the expected/mean difference in LOS for 1 bed differene
+
+# Get the critical t value for alpha=0.05 and n-2 df
+
+qt(0.975,111)  # In data hospital, df=n-2=113-2=111
+
+coef<-summary(reg_hos)$coefficients[2,1] 
+err<-summary(reg_hos)$coefficients[2,2] 
+slope_int<-coef + c(-1,1)*err*qt(0.975, 111)
+
+# CIs for both slope and intercept
+confint(reg_hos)
+confint(reg_hos,level=0.95)
+
+
+# How do we calculate the 95% CI for 100 beds difference?
+coef<-summary(reg_hos)$coefficients[2,1] 
+err<-summary(reg_hos)$coefficients[2,2] 
+slope_int100<-100*coef + c(-1,1)*(100*err)*qt(0.975, 111)
+slope_int100
+
+
+#############################################################################
+# Calculate 95% CIs using predict function
+# If 'newdata' is omitted the predictions are based on the data used for the fit, like in the case below.
+
+pred.clim <- predict.lm(reg_hos, interval="confidence") 
+datapred <- data.frame(cbind(data_hosp$BEDS, data_hosp$LOS, pred.clim))
+
+plot(datapred[,1],datapred[,2],xlab="Number of Beds", ylab="Length of stay (days)")
+
+#abline(reg_hos,lwd=2,col=2)
+lines(datapred[,1],datapred[,3], lwd=2)
+lines(datapred[,1],datapred[,5], lty=1, col=3, type='l')
+lines(datapred[,1],datapred[,4], lty=1, col=3,type='l')
+
+# Calculate 95% PIs for fitted values using predict function
+# Compare to prediction intervals: of course that the PIs are wider than CIs
+pred.plim <- predict.lm(reg_hos, interval="prediction") 
+datapred1 <- data.frame(cbind(data_hosp$BEDS, data_hosp$LOS, pred.plim))
+
+#abline(reg_hos,lwd=2,col=2)
+lines(datapred1[,1],datapred1[,3], lwd=2)
+lines(datapred1[,1],datapred1[,5], lty=1, col=2, type='l')
+lines(datapred1[,1],datapred1[,4], lty=1, col=2,type='l')
+
+
+##############################################################
+# Calculate the correlation coefficient between LOS and BEDS
+cor(data_hosp$LOS, data_hosp$BEDS)
+
+# Look at the R_squared. How does it compare to the correlation? Same value, but only for SLR.
+cor(data_hosp$LOS, data_hosp$BEDS)^2
+
+```
+
+## MLR
+```{r mlr}
+################################################################
+#                   Biostatistical Methods I                   #
+#                 Multiple Linear Regression                   #
+################################################################
+
+library(faraway)
+library(broom)
+library(dplyr)
+
+# Read data 'Hospitals'
+data_hosp<-read.csv(here::here("R_Code/R - Module 17/Hospital.csv"))
+names(data_hosp)
+
+# Scatter plot with regression line overlaid and 95% confidence bands
+data_hosp %>% 
+  ggplot(aes(BEDS, LOS)) + geom_point(color='blue') + theme_bw(base_size=20) +
+  geom_smooth(method='lm', se=TRUE, color='red') +
+  labs(x="Number of beds", y="Length of stay (days)")
+
+
+# Simple linear regression: Length of stay (LOS) vs number of BEDS 
+reg_hos<-lm(data_hosp$LOS~data_hosp$BEDS)
+summary(reg_hos)
+
+# Get the ANOVA table
+anova(reg_hos)
+
+
+# Matrix model
+model.matrix(reg_hos)
+
+model.matrix(reg_hos) %>% head
+
+
+# Multiple linear regression: 
+# Var 1: Number of BEDS 
+# Var 2: INFRISK (prob. % of getting an infection during hospitalization)
+
+regmult1_hos<-lm(data_hosp$LOS~data_hosp$BEDS + data_hosp$INFRISK)
+
+# Analyze the regression results
+summary(regmult1_hos)
+
+
+# Multiple linear regression: BEDS and INFRISK and NURSE
+regmult2_hos<-lm(data_hosp$LOS~data_hosp$BEDS + data_hosp$INFRISK+data_hosp$NURSE)
+summary(regmult2_hos)
+
+
+
+# Multiple linear regression: BEDS and MEDSCHL (Medical School Affiliation: 1-Yes, 2-No)
+
+# Recode MEDSCHL: Yes:1 and No:0
+
+data_hosp$MS<-ifelse(data_hosp$MEDSCHL==1,1,ifelse(data_hosp$MEDSCHL==2, 0, NA))
+
+# Multiple linear regression: INFRISK and new MS (Medical School Affiliation: 1-Yes, 0-No)
+regmult3_hos<-lm(data_hosp$LOS~data_hosp$INFRISK +data_hosp$MS)
+summary(regmult3_hos)
+
+
+# Categorical predictor REGION: multiple levels
+
+# Simple linear regression with predictor REGION (1:NE, 2:NC, 3:S, 4:W)
+data_hosp %>% lm(LOS~REGION, data=.) %>% summary
+# How does it look?
+
+# Make it a factor
+data_hosp %>% lm(LOS~factor(REGION), data=.) %>% summary
+
+# Compare intercept model
+data_hosp %>% lm(LOS~factor(REGION), data=.) %>% summary
+
+# To No intercept model
+data_hosp %>% lm(LOS~0+factor(REGION), data=.) %>% summary
+
+
+# Change the reference category for REGION (from 1 to 3)
+# Intercept added
+data_hosp %>% mutate(REGION=relevel(factor(REGION),ref=3)) %>% lm(LOS~factor(REGION), data=.) %>% summary
+
+
+
+# Multiple linear regression: INFRISK, new MS and Region (1:NE, 2:NC, 3:S, 4:W)
+regmult4_hos<-lm(data_hosp$LOS~data_hosp$INFRISK +data_hosp$MS+factor(data_hosp$REGION))
+summary(regmult4_hos)
+
+# 'General' global test for all predictors
+anova(regmult4_hos)
+
+
+# Multiple linear regression: new MS, Region (1:NE, 2:NC, 3:S, 4:W) and their interaction
+regmult5_hos<-lm(LOS~INFRISK*MS, data=data_hosp)
+summary(regmult5_hos)
+
+# Vizualize interaction for reg5: LOS vs INFRISK by MS affiliation
+qplot(x = INFRISK, y = LOS, data = data_hosp, color = factor(MS)) +
+     geom_smooth(method = "lm", se=FALSE) +
+     labs(x="Infection Risk", y="Length of stay (days)")
+                 
+# Lines look fairly parallel, in line with the non-sig interaction result.
+
+```
+
+## Diagonsis
+```{r diagonsis}
+################################################################
+#                   Biostatistical Methods I                   #
+#                  Multiple Linear Regression                  #
+#                     Model Diagnostics                        #
+################################################################
+
+library(dplyr)
+library(HH)
+
+
+# Read data Surgical.csv
+data_surg<-read.csv(here::here("R_Code/R - Module 20/Surgical.csv"))
+names(data_surg)
+#attach(data_surg)
+
+# Residuals vs fitted values plot
+par(mfrow = c(1, 2))
+
+fit1 <- lm(Survival ~ Bloodclot + Progindex + Enzyme + Liver, data=data_surg)
+plot(fitted(fit1), resid(fit1), xlab = "Predicted/Fitted value", ylab = "Residual")
+title("(a) Residual Plot for Y (Survival) ")
+abline(0, 0)
+
+# MLR with LnSurvival - natural log transformation of "Survival" outcome
+fit2 <- lm(Lnsurvival ~ Bloodclot + Progindex + Enzyme + Liver,  data=data_surg)
+plot(fitted(fit2), resid(fit2), xlab = "Predicted/Fitted value", ylab = "Residual")
+title("(b) Residual Plot for lnY (LnSurvival)")
+abline(0, 0)
+
+
+#Residuals vs one covariate: use data Hospital.csv
+
+data_hos<-read.csv(here::here("R_Code/R - Module 17/Hospital.csv"))
+
+fit3<-lm(LOS~NURSE,data=data_hos)
+plot(data_hos$NURSE, fit3$residuals)
+abline(h=0, lwd=2, col=2)
+
+#Residuals vs one covariate
+fit4=lm(log(LOS)~NURSE,data=data_hos)
+plot(data_hos$NURSE, fit4$residuals)
+abline(h=0, lwd=2, col=2)
+
+
+# Quantile-Quantile plot (QQ-plot)
+
+par(mfrow = c(1, 2))
+
+qqnorm(resid(fit1), xlab = "Expected Value", ylab = "Residual", main = "")
+qqline(resid(fit1))
+title("(a) QQ Plot for Y (Survival)")
+
+qqnorm(resid(fit2), xlab = "Expected Value", ylab = "Residual", main = "")
+qqline(resid(fit2))
+title("(d) QQ Plot lnY (LnSurvival)")
+
+
+# Obtain all (4) diagnostic plots: EASIER and fast check of the MLR diagnostics
+# Plot the regression object
+par(mfrow=c(2,2))
+plot(fit2)
+
+
+#################################################################################
+#                       Box-Cox transformation                                  #
+#################################################################################
+
+
+library(MASS)
+fit1 <- lm(Survival ~ Bloodclot, data=data_surg)
+boxcox(fit1)  # default grid of lambdas is -2 to 2 by 0.1
+
+# Could change grid of lambda values
+boxcox(fit1, lambda = seq(-3, 3, by=0.25) ) 
+
+
+# Box Cox for multiple regression
+mult.fit1 <- lm(Survival ~ Bloodclot + Progindex + Enzyme + Liver + Age + Gender + Alcmod + Alcheav, data=data_surg) 
+summary(mult.fit1)
+
+boxcox(mult.fit1) 
+plot(mult.fit1)
+
+
+mult.fit2 <- lm(Lnsurvival ~ Bloodclot + Progindex + Enzyme + Liver + Age + Gender + Alcmod + Alcheav, data=data_surg) 
+summary(mult.fit2)
+boxcox(mult.fit2) 
+
+
+
+
+#####################################################################################
+#           Outliers, leverage and influential points                               #
+#####################################################################################
+
+# rstandard function gives the INTERNALLY studentized residuals 
+
+stu_res<-rstandard(mult.fit1)
+outliers_y<-stu_res[abs(stu_res)>2.5]
+
+# Measures of influence:
+# Gives DFFITS, Cook's Distance, Hat diagonal elements, and others.
+
+influence.measures(mult.fit1)
+
+# Look at the Cook's distance lines and notice obs 5 and 28 as potential Y outliers/influential points
+
+par(mfrow=c(2,2))
+plot(mult.fit1)
+
+# Examine results with and without observations 5 and 28 that have very high survivals (>2000)
+summary(mult.fit1)
+plot(data_surg$Bloodclot, data_surg$Survival)
+surg_only5_28<-data_surg[c(5,28),]
+
+
+# Remove observations 5 and 28
+surg_no5_28<-data_surg[c(-5,-28),]
+plot(surg_no5_28$Bloodclot, surg_no5_28$Survival)
+mult.fit_no5_28<- lm(Survival ~ Bloodclot + Progindex + Enzyme + Liver + Age + Gender + Alcmod + Alcheav, data=surg_no5_28) 
+
+summary(mult.fit_no5_28)
+
+influence.measures(mult.fit_no5_28)
+
+par(mfrow=c(2,2))
+plot(mult.fit_no5_28)
+
+
+#####################################################################################
+#                             Multicollinearity                                     #
+#####################################################################################
+ 
+# Generate data
+set.seed(1)
+
+data.multi = data.frame(age = round(rnorm(100, 30, 10),2)) %>%
+  mutate(height = 25 + 2*age + rnorm(100, 0, 15),
+         age_copy=age, age_new=age + rnorm(100, 0, 2))
+
+# Correlation matrix for all variables
+round(cor(data.multi),3)
+
+# Scatter plot matrix for all variables
+pairs(data.multi)
+
+
+# Fit a simple linear regression with original age
+reg1<-lm(height~age, data=data.multi)
+summary(reg1)
+
+# Fit a linear regression with original age and age_copy
+reg2<-lm(height~age+age_copy, data=data.multi)
+summary(reg2)
+
+# Fit a linear regression with original age and age_new
+reg3<-lm(height~age+age_new, data=data.multi)
+summary(reg3)
+
+# Fit a linear regression with original age, age_copy and age_new
+reg4<-lm(height~age+age_copy+age_new, data=data.multi)
+summary(reg4)
+
+
+###
+# Calculate the variance inflation factor (VIF)
+vif(reg4)
+
+
+# Data Surgical
+# Checking for multicollinearity: VIF
+vif(mult.fit_no5_28)
+
+```
+## Selection
+```{r selection}
+
+################################################################
+#                   Biostatistical Methods I                   #
+#               Model Building/Variable Selection              #
+################################################################
+
+library(dplyr)
+library(HH)
+library(leaps)
+library(corrplot)                      # Correlation plot
+
+# Read data Surgical.csv
+
+data_surg<-read.csv(here::here("R_Code/R - Module 20/Surgical.csv"))
+names(data_surg)
+
+# Attach function lets you access the variables directly
+attach(data_surg)
+
+
+# Explorations: scatter plot matrix and pairwise correlations
+pairs(data_surg)
+
+# Helps identify collinearity 
+cor(data_surg)
+
+
+# Another way to generate the correlation matrix
+cor_mat <- round(cor(data_surg),2)
+
+# Vizualize correlation matrix
+# Requires library(corrplot) and library(dplyr) 
+
+
+par(mar=c(4,5,1,1))                                            # Enlarge the dimension of the plot
+cor(data_surg[,c(1,2,3,4,5,10)])%>%                            # Select only continuous variables to calculate correlation 
+  corrplot(method = "circle", type = "upper", diag=FALSE)
+
+
+# Boxplots for each variable
+# par(mar=c(3,3,1,1)) # if margins are too large
+par(mfrow=c(2,3))
+boxplot(Lnsurvival, main='Lnsurvival')
+boxplot(Age, main='Age')
+boxplot(Bloodclot,main='Bloodclot' )
+boxplot(Progindex, main='Progindex')
+boxplot(Enzyme, main='Enzyme')
+boxplot(Liver, main='Liver')
+
+# Make a data frame with ln(Survival) as the only outcome.
+surg<-data.frame(data_surg[,-9])
+
+# Fit a regression using all predictors
+mult.fit <- lm(Lnsurvival ~ Bloodclot + Progindex + Enzyme + Liver + Age + Gender + Alcmod + Alcheav, data=surg)
+summary (mult.fit)
+
+# Same thing
+mult.fit <- lm(Lnsurvival ~ ., data=surg)
+summary(mult.fit)
+
+#############################################################################
+# Backward elimination: take out non-significant variables 'one at a time'  #
+# starting with the highest p-value                                         #
+#############################################################################
+
+# No Liver
+step1<-update(mult.fit, . ~ . -Liver)
+summary(step1)
+
+# No Alcmod
+step2<-update(step1, . ~ . -Alcmod)
+summary(step2)
+
+# No Age
+step3<-update(step2, . ~ . -Age)
+summary(step3)
+
+# No Gender
+step4<-update(step3, . ~ . -Gender)
+summary(step4)
+
+# What are the effects on R2 and adj-R2? Any effect on the coefficients?
+
+
+#########################################################################################
+# Forward elimination: Reversed backward elimination starting with the lowest p-value   #                                                            
+#########################################################################################
+
+library(faraway)
+library(broom)
+
+
+############################################################################
+#  Stepwise regreession                                                    #   
+# 'Step' function uses AIC criterion for var selection and the default     #
+#  option is 'backward'.                                                   #
+#  Step is a simplified version of stepAIC()                               #
+############################################################################
+
+mult.fit <- lm(Lnsurvival ~ ., data=surg)
+step(mult.fit, direction='backward')
+
+
+############################################################################
+#                         Test-based procedures                           #
+############################################################################
+
+# Leaps function provides all-subsets analysis
+
+# Printing the 2 best models of each size, using the Cp criterion:
+leaps(x = surg[,1:8], y = surg[,9], nbest=2, method="Cp")
+
+
+# Printing the 2 best models of each size, using the adjusted R^2 criterion:
+leaps(x = surg[,1:8], y = surg[,9], nbest=2, method="adjr2")
+
+# Summary of models for each size (one model per size)
+# Function regsubsets() performs a subset slection by identifying the "best" model that contains
+# a certain number of predictors. By default "best" is chosen using SSE/RSS (smaller is better).
+
+
+b<-regsubsets(Lnsurvival ~ ., data=surg)
+   (rs<-summary(b))
+
+# This function also returns R2, Cp, BIC for each "best" model.
+# Let's take a look at these values.
+
+# Plots of Cp and Adj-R2 as functions of parameters
+
+par(mar=c(4,4,1,1))
+par(mfrow=c(1,2))
+
+plot(2:9, rs$cp, xlab="No of parameters", ylab="Cp Statistic")
+abline(0,1)
+
+plot(2:9, rs$adjr2, xlab="No of parameters", ylab="Adj R2")
+
+
+# AIC of the 6-predictor model:
+
+multi.fit6 <- lm(Lnsurvival ~ Age + Gender + Bloodclot + Alcheav + Progindex + Enzyme, data=data_surg)
+AIC(multi.fit6)
+
+# BIC
+AIC(multi.fit6, k = log(length(Lnsurvival)))
+
+# AIC of the 4-predictor model:
+multi.fit4 <- lm(Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot)
+AIC(multi.fit4)
+
+# How do the 6- and 4-predictors models compare in terms of AIC, R-adj, Cp?
+
+#############################################################################
+#   A more compact way to look at the test-based results                    #
+#############################################################################
+
+best <- function(model, ...) 
+{
+  subsets <- regsubsets(formula(model), model.frame(model), ...)
+  subsets <- with(summary(subsets),
+                  cbind(p = as.numeric(rownames(which)), which, rss, rsq, adjr2, cp, bic))
+  
+  return(subsets)
+}  
+
+
+# Select the 'best' model of all subsets for 4-predictor model
+round(best(multi.fit4, nbest = 1), 4)
+
+
+# Checking the model assumptions for the model: Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot
+par(mfrow=c(2,2))
+plot(multi.fit4)
+
+
+
+```
+
+## Validation 
+[Validation on P8105](https://p8105.com/cross_validation.html)
+
+[Bootstrap on P8105](https://p8105.com/bootstrapping.html)
+
+```{r validataion}
+
+################################################################
+#                   Biostatistical Methods I                   #
+#                      Model Validation                        #
+################################################################
+
+
+# Read data Surgical.csv and keep only lnSurvival as outcome
+data_surg<-read.csv(here::here("R_Code/R - Module 20/Surgical.csv"))
+surg_lnSurv<-data.frame(data_surg[,-9])
+
+library(caret)
+
+# Use 5-fold validation and create the training sets
+
+set.seed(1)
+data_train<-trainControl(method="cv", number=5)
+
+# Fit the 4-variables model that we discussed in previous lectures
+model_caret<-train(Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot,
+                   data=surg_lnSurv,
+                   trControl=data_train,
+                   method='lm',
+                   na.action=na.pass)
+  
+# Model predictions using 4 parts of the data for training 
+model_caret
+
+# RMSE=2206257, R-squared = 0.7996792 - good % variation accounted for
+# Both MAE and RMSE express average model prediction error in units of the variable of interest.
+# Both metrics can range from 0 to ??? and are indifferent to the direction of errors (lower is better).
+# MAE is steady and RMSE increases as the variance associated with the frequency distribution of error magnitudes also increases (large errors are not desired).
+
+
+# Model coefficients
+model_caret$finalModel
+
+# Examine model prediction for each fold
+model_caret$resample
+
+# Look at standard deviation around the Rsquared value by examining the R-squared from each fold.
+sd(model_caret$resample$Rsquared)
+
+
+
+# Let's look at the model using all data, no CV
+full_model<-lm(Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot, data=surg_lnSurv)
+summary(full_model)
+
+# Full data had an Rsquared=0.8299; what was the CV result for R-squared?
+# What about MSE values? Values are comparable.
+
+
+# Exercise for you: try 'caret' and split the data 50-50
+
+
+#####################################################
+#                        LOOCV                      #
+#####################################################
+
+# Use glm() instead of lm() because of cv.glm() function
+glm.fit<-glm(Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot, data=surg_lnSurv)
+
+
+library(boot)                          # For cv.glm()
+cv.err<-cv.glm(surg_lnSurv,glm.fit)
+
+# The two delta values should be similar: we use the first one-the raw cross-validation estimate of prediction error.
+# The second value is bias corrected
+cv.err$delta   
+
+# Next steps are to fit models with other predictor combinations and compare the CVs
+
+########################################################################
+# Bootstrap to assess the variability of model estimates: b0 and b1    #
+########################################################################
+
+boot.fn<-function(data, index){
+	return(coef(lm(Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot, data=surg_lnSurv, subset=index)))
+}
+
+# Our usual regression, no bootstrap yet
+boot.fn(surg_lnSurv,1:54)
+
+
+# Compute the estimates by sampling with replacement
+# Sample chooses 54 observations from 54, with replacement
+# Might have duplicates
+set.seed(1)
+
+# One draw
+boot.fn(surg_lnSurv,sample(54,54,replace=T))
+
+# Use function boot() to repeat the sampling 10000 times.
+# Repeat 10000 times to get the estimates, SEs ad bias
+
+boot(surg_lnSurv, boot.fn, 10000)
+
+# How does it compare to the original (non-bootstrap) estimates?
+
+
+########################################################################
+#                   Model validation: criteria                         #
+########################################################################
+
+library(MPV)                           # For PRESS criterion
+
+newsummary <- function(model)
+{
+    list('coefs'    = round(t(summary(model)$coef[, 1:2]), 4),
+         'criteria' = cbind('SSE'   = anova(model)["Residuals", "Sum Sq"],
+                            'PRESS' = PRESS(model),
+                            'MSE'   = anova(model)["Residuals", "Mean Sq"],
+                            'Rsq'   = summary(model)$adj.r.squared))
+}
+
+newsummary(lm(Lnsurvival ~ Bloodclot + Alcheav + Progindex + Enzyme, surg_lnSurv))
+
+
+
+####################################################################
+#               Data Generation and Cross Validation              #
+####################################################################
+
+
+## Generate 100 training sets each of size 50 from a polynomial regression model
+# Fit a sequence of cubic spline models with degrees of freedom from 1 to 20.
+
+set.seed(3)
+
+gen_data <- function(n, beta, sigma_eps) {
+  eps <- rnorm(n, 0, sigma_eps)
+  x <- sort(runif(n, 0, 100))
+  X <- cbind(1, poly(x, degree = (length(beta) - 1), raw = TRUE))
+  y <- as.numeric(X %*% beta + eps)
+  
+  return(data.frame(x = x, y = y))
+}
+
+# Fit the models
+require(splines)
+
+n_rep <- 100
+df <- 1:20
+beta <- c(5, 0.3, 0.001, -3e-05)           
+n_test <- 100
+n_train<-50
+sigma_eps <- 0.5
+
+xy <- res <- list()
+
+# Test data
+xy_test <- gen_data(n_test, beta, sigma_eps)
+
+# Train data
+for (i in 1:n_rep) {
+  xy[[i]] <- gen_data(n_train, beta, sigma_eps)
+  x <- xy[[i]][, "x"]
+  y <- xy[[i]][, "y"]
+  res[[i]] <- apply(t(df), 2, function(degf) lm(y ~ ns(x, df = degf)))
+}
+
+# Plot true and training data with overlaid models
+
+#dev.off()
+
+x <- xy[[1]]$x
+X <- cbind(1, poly(x, degree = (length(beta) - 1), raw = TRUE))
+y <- xy[[1]]$y
+plot(y ~ x, col = "gray", lwd = 2)
+lines(x, X %*% beta, lwd = 3, col = 1)                        #True model
+lines(x, fitted(res[[1]][[1]]), lwd = 3, col = 2)
+lines(x, fitted(res[[1]][[3]]), lwd = 3, col = 3)
+lines(x, fitted(res[[1]][[20]]), lwd = 3, col = 4)
+legend(x = "bottomright", legend = c("True function", "Linear fit (df = 1)", "Good model (df = 3)", 
+                                     "Overfitted model (df = 20)"), lwd = rep(3, 4), col = c(1,2,3,4), cex = 0.85)
+
+
+
+
+# k-fold cross-validation using simulated data. Generate 100 observations and choose k=10.
+# The plot shows the training, test errors, CV and standard errors of the individual prediction error for each of the k=10 parts.
+
+n_train <- 100
+xy <- gen_data(n_train, beta, sigma_eps)
+x <- xy$x
+y <- xy$y
+
+fitted_models <- apply(t(df), 2, function(degf) lm(y ~ ns(x, df = degf)))
+mse <- sapply(fitted_models, function(obj) deviance(obj)/nobs(obj))
+
+n_test <- 100
+xy_test <- gen_data(n_test, beta, sigma_eps)
+pred <- mapply(function(obj, degf) predict(obj, data.frame(x = xy_test$x)), 
+               fitted_models, df)
+te <- sapply(as.list(data.frame(pred)), function(y_hat) mean((xy_test$y - y_hat)^2))
+
+n_folds <- 10
+folds_i <- sample(rep(1:n_folds, length.out = n_train))
+cv_tmp <- matrix(NA, nrow = n_folds, ncol = length(df))
+for (k in 1:n_folds) {
+  test_i <- which(folds_i == k)
+  train_xy <- xy[-test_i, ]
+  test_xy <- xy[test_i, ]
+  x <- train_xy$x
+  y <- train_xy$y
+  fitted_models <- apply(t(df), 2, function(degf) lm(y ~ ns(x, df = degf)))
+  x <- test_xy$x
+  y <- test_xy$y
+  pred <- mapply(function(obj, degf) predict(obj, data.frame(ns(x, df = degf))), 
+                 fitted_models, df)
+  cv_tmp[k, ] <- sapply(as.list(data.frame(pred)), function(y_hat) mean((y - 
+                                                                           y_hat)^2))
+}
+cv <- colMeans(cv_tmp)
+
+require(Hmisc)
+
+plot(df, mse, type = "l", lwd = 2, col = gray(0.4), ylab = "Prediction error", 
+     xlab = "Degrees of freedom (log scaled)", main = paste0(n_folds, 
+                                                                     "-fold Cross-Validation"), log = "x")
+
+# For a better vizualization of the errors, you can change the ylim=c(0.01,1)
+
+lines(df, te, lwd = 2, col = "darkred", lty = 2)
+cv_sd <- apply(cv_tmp, 2, sd)/sqrt(n_folds)
+errbar(df, cv, cv + cv_sd, cv - cv_sd, add = TRUE, col = "steelblue2", pch = 19, 
+       lwd = 0.5)
+lines(df, cv, lwd = 2, col = "steelblue2")
+points(df, cv, col = "steelblue2", pch = 19)
+legend(x = "topright", legend = c("Training error", "Test error", "Cross-validation error"), 
+       lty = c(1, 2, 1), lwd = rep(2, 3), col = c(gray(0.4), "darkred", "steelblue2"), cex = 0.85)
+
 ```
 
