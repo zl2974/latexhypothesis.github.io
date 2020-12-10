@@ -1,7 +1,5 @@
 ---
 title: "R Code for hypothesis testing"
-author: "Jeffrey Liang"
-date: "10/29/2020"
 output: 
   html_document:
     toc: true
@@ -28,6 +26,8 @@ library(tidyverse)
 
 
 # Distribution {.tabset}
+
+## Hide
 
 ## Binomial
 $P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}$

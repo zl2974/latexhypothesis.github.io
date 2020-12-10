@@ -9,9 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Jeffrey Liang" />
 
-<meta name="date" content="2020-10-29" />
 
 <title>R Code for hypothesis testing</title>
 
@@ -396,8 +394,6 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">R Code for hypothesis testing</h1>
-<h4 class="author">Jeffrey Liang</h4>
-<h4 class="date">10/29/2020</h4>
 
 </div>
 
@@ -414,11 +410,14 @@ pre[class] {
 </style>
 <div id="distribution" class="section level1 tabset">
 <h1>Distribution</h1>
+<div id="hide" class="section level2">
+<h2>Hide</h2>
+</div>
 <div id="binomial" class="section level2">
 <h2>Binomial</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = {n \choose k}p^k(1-p)^{n-k}\)</span></p>
 <pre class="r"><code>rbinom(5,10,0.3)
-## [1] 2 4 1 4 2
+## [1] 2 5 6 4 3
 qbinom(0.05,10,0.3)
 ## [1] 1
 pbinom(1,10,0.3)
@@ -430,7 +429,7 @@ dbinom(1,10,0.3)
 <h2>Normal Distribution</h2>
 <p><span class="math inline">\(P(\mathcal{X}=k)\ = \frac{1}{\sqrt{2\pi}\sigma}*e^{-\frac{(x-\mu)^2}{2\sigma^2}}\)</span></p>
 <pre class="r"><code>rnorm(5)
-## [1]  0.0743022 -2.1425683 -0.1755895  0.9596158  0.3820480
+## [1] -0.4914706  1.8042584 -0.7052925  0.9350606  0.6894319
 qnorm(0.05)
 ## [1] -1.644854
 pnorm(1.96)
@@ -441,7 +440,7 @@ dnorm(1.96)
 </div>
 <div id="descriptive-statistics" class="section level1 tabset">
 <h1>Descriptive Statistics</h1>
-<div id="hide" class="section level2">
+<div id="hide-1" class="section level2">
 <h2>hide</h2>
 </div>
 <div id="table" class="section level2">
@@ -711,7 +710,7 @@ xtabs( ~ race + smoke + ht, data = low_birth_all)</code></pre>
 </div>
 <div id="t-test" class="section level1 tabset">
 <h1>T-Test</h1>
-<div id="hide-1" class="section level2">
+<div id="hide-2" class="section level2">
 <h2>hide</h2>
 </div>
 <div id="one-group" class="section level2">
@@ -1016,7 +1015,7 @@ names(res)</code></pre>
 </div>
 <div id="multigroup-camparison" class="section level1 tabset">
 <h1>Multigroup Camparison</h1>
-<div id="hide-2" class="section level2">
+<div id="hide-3" class="section level2">
 <h2>hide</h2>
 </div>
 <div id="anova" class="section level2">
@@ -1194,7 +1193,7 @@ summary(glht(res1), linfct = mcp(Group = &quot;Dunnett&quot;))</code></pre>
 </div>
 <div id="proportion" class="section level1 tabset">
 <h1>Proportion</h1>
-<div id="hide-3" class="section level2">
+<div id="hide-4" class="section level2">
 <h2>hide</h2>
 </div>
 <div id="normal-approximate-binomial" class="section level2">
@@ -1700,7 +1699,7 @@ chisq.test(procedure_data)</code></pre>
 </div>
 <div id="regression" class="section level1 tabset">
 <h1>Regression</h1>
-<div id="hide-4" class="section level2">
+<div id="hide-5" class="section level2">
 <h2>Hide</h2>
 </div>
 <div id="slr" class="section level2">
